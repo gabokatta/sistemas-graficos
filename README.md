@@ -6,7 +6,7 @@
 
 - <a href="https://gabokatta.github.io/sistemas-graficos/ejercicios/triangulos/triangulos.html">Triangulos</a>
 - Letras [<a href="https://gabokatta.github.io/sistemas-graficos/ejercicios/letras/ejercicio1.html">V1</a>] [<a href="https://gabokatta.github.io/sistemas-graficos/ejercicios/letras/ejercicio2.html">V2</a>]
-- Sistema Solar
+- <a href="https://gabokatta.github.io/sistemas-graficos/ejercicios/sistema-solar/sistemaSolar.html">Sistema Solar</a>
 
 ## Bibliografía
 
