@@ -412,7 +412,7 @@
             let earthToMoon =  45;
             let issToEarth = 15;
 
-            // Describe las propiedades default de orbita de la tierra.
+            // Aplica las propiedades default de orbita de la tierra. [Similar a un objeto3D contenedor.]
             function earthOrbit(m) {
                 // Orbita alrededor del sol.
                 mat4.rotate(m, m, tiempo, [0,1,0]);
@@ -420,6 +420,7 @@
                 mat4.translate(m, m, [sunToEarth,0,0]);
             }
 
+            // Aplica las propiedades default de orbita de la luna. [Similar a un objeto3D contenedor.]
             function moonOrbit(m) {
                 // Seteamos su origen en la tierra.
                 earthOrbit(m);
