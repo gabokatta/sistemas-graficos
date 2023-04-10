@@ -433,6 +433,8 @@
             // tierra
             m1=mat4.create(); 
             earthOrbit(m1);
+	    // Estaciones
+            mat4.rotate(m1, m1, -tiempo, [0,1,0]);	
             // Inclinacion tierra.
             mat4.rotate(m1, m1, to_rads(-23), [0,0,1]);
             // Rotacion sobre su eje.
