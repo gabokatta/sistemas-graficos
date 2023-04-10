@@ -52,12 +52,12 @@ function dibujarGeometria(){
 
 function populateIndex() {
     indexBuffer = [];
-    const indexCalc = (i,j) => (columnas)*i + j;
+    const indexCalc = (i,j) => (columnas+1)*i + j;
     for (i=0; i < filas; i++) {
-        for (j=0; j < columnas; j++) {
+        for (j=0; j <= columnas; j++) {
             indexBuffer.push(indexCalc(i,j), indexCalc(i+1,j));
         }
-        indexBuffer.push(indexCalc(i+1, columnas-1), indexCalc(i+1,0));
+        indexBuffer.push(indexCalc(i+1, columnas), indexCalc(i+1,0));
     }
     return indexBuffer;
 }
