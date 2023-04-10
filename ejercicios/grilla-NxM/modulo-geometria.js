@@ -50,50 +50,17 @@ function dibujarGeometria(){
     dibujarMalla(mallaDeTriangulos);
 }
 
-function Plano(ancho,largo){
-    this.getPosicion=function(u,v){
-        var x=(u-0.5)*ancho;
-        var z=(v-0.5)*largo;
-        return [x,0,z];
+function populateIndex() {
+    indexBuffer = [];
+    const indexCalc = (i,j) => (columnas)*i + j;
+    for (i=0; i < filas; i++) {
+        for (j=0; j < columnas; j++) {
+            indexBuffer.push(indexCalc(i,j), indexCalc(i+1,j));
+        }
+        indexBuffer.push(indexCalc(i+1, columnas-1), indexCalc(i+1,0));
     }
-
-    this.getNormal=function(u,v){
-        return [0,1,0];
-    }
-
-    this.getCoordenadasTextura=function(u,v){
-        return [u,v];
-    }
+    return indexBuffer;
 }
-
-function Esfera(radio){
-    this.getPosicion=function(u,v){
-        return null;
-    }
-
-    this.getNormal=function(u,v){
-        return null;
-    }
-
-    this.getCoordenadasTextura=function(u,v){
-        return null;
-    }
-}
-
-function TuboSenoidal(amplitud, longitud, radio, altura){
-    this.getPosicion=function(u,v){
-        return null;
-    }
-
-    this.getNormal=function(u,v){
-        return null;
-    }
-
-    this.getCoordenadasTextura=function(u,v){
-        return null;
-    }
-}
-
 
 function generarSuperficie(superficie,filas,columnas){
 
@@ -125,16 +92,8 @@ function generarSuperficie(superficie,filas,columnas){
         }
     }
 
-    indexBuffer=[];  
-    const indexCalc = (i,j) => (columnas)*i + j;
-    for (i=0; i < filas; i++) {
-        for (j=0; j < columnas; j++) {
-            indexBuffer.push(indexCalc(i,j), indexCalc(i+1,j));
-        }
-        indexBuffer.push(indexCalc(i+1, columnas-1), indexCalc(i+1,0));
-    }
-    console.log(indexBuffer);
     // Creación e Inicialización de los buffers
+    indexBuffer = populateIndex();  
 
     webgl_position_buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, webgl_position_buffer);
@@ -196,3 +155,46 @@ function dibujarMalla(mallaDeTriangulos){
  
 }
 
+function Plano(ancho,largo){
+    this.getPosicion=function(u,v){
+        var x=(u-0.5)*ancho;
+        var z=(v-0.5)*largo;
+        return [x,0,z];
+    }
+
+    this.getNormal=function(u,v){
+        return [0,1,0];
+    }
+
+    this.getCoordenadasTextura=function(u,v){
+        return [u,v];
+    }
+}
+
+function Esfera(radio){
+    this.getPosicion=function(u,v){
+        return null;
+    }
+
+    this.getNormal=function(u,v){
+        return null;
+    }
+
+    this.getCoordenadasTextura=function(u,v){
+        return null;
+    }
+}
+
+function TuboSenoidal(amplitud, longitud, radio, altura){
+    this.getPosicion=function(u,v){
+        return null;
+    }
+
+    this.getNormal=function(u,v){
+        return null;
+    }
+
+    this.getCoordenadasTextura=function(u,v){
+        return null;
+    }
+}
