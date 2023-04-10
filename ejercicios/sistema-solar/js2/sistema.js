@@ -26,7 +26,8 @@ class SolarSystem {
                     tierra, 
                     [
                         new Operation([tick*(year/10), [0,1,0]], Type.rotate),
-                        new Operation([to_rads(-23), [0,0,1]], Type.rotate)
+                        new Operation([to_rads(-23), [0,0,1]], Type.rotate),
+                        new Operation([-tick, [0,1,0]], Type.rotate)
                     ],
                     []),
                 // Luna
