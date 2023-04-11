@@ -50,12 +50,12 @@
 
         //-------------------------------------------------------
         // Camera
-        var distanciaCamara=9;
+        var distanciaCamara=5;
         var alturaCamara=4;
         var velocidadAngular=0.15;
 
         // Shapes
-        var figura = "plano";
+        var figura = "tuboSenoidal";
         var superficie3D = new Plano(anchoPlano, largoPlano);
         var shapeControllers = [];
         //-------------------------------------------------------
@@ -278,15 +278,15 @@
             planoParams.open();
 
             var esferaParamas = shapeFolder.addFolder('Parametros Esfera');
-            esferaParamas.add(window, "radioEsfera",1,5).step(1);
+            esferaParamas.add(window, "radioEsfera",1,10).step(1);
             esferaParamas.open();
             esferaParamas.hide();
 
             var tuboSenParams = shapeFolder.addFolder('Parametros Tubo Senoidal');
-            tuboSenParams.add(window, "amplitudOnda",0.05,1).step(0.05);
-            tuboSenParams.add(window, "longitudOnda",0.1,2).step(0.1);
-            tuboSenParams.add(window, "radioTubo",1,5).step(1);
-            tuboSenParams.add(window, "largoTubo",1,5).step(1);
+            tuboSenParams.add(window, "amplitudOnda",0.05,0.5).step(0.05);
+            tuboSenParams.add(window, "longitudOnda",0.05,2).step(0.05);
+            tuboSenParams.add(window, "radioTubo",1,5).step(0.5);
+            tuboSenParams.add(window, "largoTubo",1,5).step(0.5);
             tuboSenParams.open();
             tuboSenParams.hide();
 

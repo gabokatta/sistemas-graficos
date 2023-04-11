@@ -26,19 +26,19 @@
 */
 
 // Shapes
-var radioEsfera = 5;
+var radioEsfera = 3;
 
-var anchoPlano = 10;
-var largoPlano = 10;
+var anchoPlano = 4;
+var largoPlano = 4;
 
-var amplitudOnda = 5;
-var longitudOnda = 10;
-var radioTubo = 7;
-var largoTubo = 7;
+var amplitudOnda = 0.1;
+var longitudOnda = 0.2;
+var radioTubo = 1;
+var largoTubo = 3;
 
 // Grid
-var filas=3;
-var columnas=5;
+var filas=30;
+var columnas=30;
 
 var mallaDeTriangulos;
 
@@ -173,28 +173,40 @@ function Plano(ancho,largo){
 
 function Esfera(radio){
     this.getPosicion=function(u,v){
-        return null;
+
+        const theta = u * 2 * Math.PI;
+        const phi = (v - 0.5) * Math.PI;
+
+        x = (radio*Math.cos(phi))*Math.cos(theta);
+        y = radio*Math.sin(phi);
+        z = (radio*Math.cos(phi))*Math.sin(theta);
+
+        return vec3.fromValues(x,y,z);
     }
 
     this.getNormal=function(u,v){
-        return null;
+        var pos = this.getPosicion(u,v);
+        var normal = vec3.create();
+        vec3.normalize(normal, pos);
+        return normal;
     }
 
     this.getCoordenadasTextura=function(u,v){
-        return null;
+        return [u,v];
     }
 }
 
-function TuboSenoidal(amplitud, longitud, radio, altura){
-    this.getPosicion=function(u,v){
+function TuboSenoidal(amplitud, longitud, radio, altura) {
+    this.getPosicion = function (u, v) {
+        // TODO: Investigar como hacer.
         return null;
-    }
-
-    this.getNormal=function(u,v){
+    };
+  
+    this.getNormal = function (u, v) {
         return null;
-    }
-
-    this.getCoordenadasTextura=function(u,v){
-        return null;
-    }
-}
+    };
+  
+    this.getCoordenadasTextura = function (u, v) {
+        return [u,v];
+    };
+  }
