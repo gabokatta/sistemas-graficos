@@ -34,7 +34,7 @@ var largoPlano = 4;
 var amplitudOnda = 0.1;
 var longitudOnda = 0.2;
 var radioTubo = 1;
-var largoTubo = 3;
+var alturaTubo = 3;
 
 // Grid
 var filas=30;
@@ -198,12 +198,32 @@ function Esfera(radio){
 
 function TuboSenoidal(amplitud, longitud, radio, altura) {
     this.getPosicion = function (u, v) {
-        // TODO: Investigar como hacer.
-        return null;
+        const phi = u * Math.PI * 2;
+        const theta = v * Math.PI * 2;
+        const sin_theta = Math.sin(theta / longitud);
+      
+        const x = (radio + amplitud * sin_theta) * Math.cos(phi);
+        const y = altura * v;
+        const z = (radio + amplitud * sin_theta) * Math.sin(phi);
+      
+        return vec3.fromValues(x, y, z);
     };
   
     this.getNormal = function (u, v) {
-        return null;
+        // TODO: En un futuro testear si funciona.
+        // Conseguimos 3 puntos cercanos uno al otro.
+        const p1 = this.getPosicion(u, v);
+        const p2 = this.getPosicion(u + 0.01, v);
+        const p3 = this.getPosicion(u, v + 0.01);
+
+        // Conseguimos vectores tangentes al punto actual.
+        const v1 = vec3.subtract(vec3.create(), p2, p1);
+        const v2 = vec3.subtract(vec3.create(), p3, p1);
+
+        // Calculamos el vector normal a ambos puntos como el producto cruzado y normalizamos el resultante.
+        const normal = vec3.normalize(vec3.create(), vec3.cross(vec3.create(), v1, v2));
+
+        return normal;
     };
   
     this.getCoordenadasTextura = function (u, v) {
