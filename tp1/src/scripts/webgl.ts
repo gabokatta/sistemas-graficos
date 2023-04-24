@@ -88,10 +88,6 @@ class WebGL {
                 this.gl.drawElements(this.gl.LINE_STRIP, index.length, this.gl.UNSIGNED_SHORT, 0);
                 break;
             }
-            case DrawMethod.Wireframe: {
-                this.gl.drawElements(this.gl.TRIANGLE_STRIP, index.length, this.gl.UNSIGNED_SHORT, 0);
-                break;
-            }
         }
     }
 
@@ -145,7 +141,6 @@ function handleResponse(response: Response) {
 };
 
 enum DrawMethod {
-    Wireframe,
     Smooth,
     Lines
 }
