@@ -1,16 +1,20 @@
-import { mat4 } from "gl-matrix";
+import { mat4 , vec3 } from "gl-matrix";
 
-const vertexShaderPath = new URL("../shaders/vertex.glsl");
-const fragmentShaderPath = new URL("../shaders/fragment.glsl");
+const vertexShaderPath = '../dist/shaders/vertex.glsl';
+const fragmentShaderPath = '../dist/shaders/fragment.glsl';
 
-class WebGL {
+export class WebGL {
+
     public canvas: HTMLCanvasElement;
     public gl: WebGLRenderingContext;
     public program: WebGLProgram;
+
     public modelMatrix: mat4;
     public viewMatrix: mat4;
     public projMatrix: mat4;
     public normalMatrix: mat4;
+
+    public method: DrawMethod;
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -18,33 +22,35 @@ class WebGL {
         this.viewMatrix = mat4.create();
         this.projMatrix = mat4.create();
         this.normalMatrix = mat4.create();
+        this.method = DrawMethod.Smooth;
 
         if (!canvas) throw Error("Your browser does not support WebGL");
         this.gl = canvas.getContext("webgl")!;
         this.program = this.gl.createProgram()!;
 
-        this.setUpWebGL();
+        this.cleanGL();
     };
 
-    setUpWebGL() {
+    cleanGL() {
         this.gl.enable(this.gl.DEPTH_TEST);
         this.gl.clearColor(0.1, 0.1, 0.2, 1.0);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     };
 
-    async init() {
-        await this.setUpShaders(vertexShaderPath, fragmentShaderPath);
+    async init(vertexShader = vertexShaderPath, fragmentShader = fragmentShaderPath) {
+        await this.setUpShaders(vertexShader, fragmentShader);
         this.setUpMatrices();
-        this.setUpWebGL();
+        this.cleanGL();
+        return this;
     }
 
     setUpMatrices() {
-        mat4.perspective(this.projMatrix,45, this.canvas.width / this.canvas.height, 0.1, 100.0);
-        mat4.identity(this.modelMatrix);
-        mat4.rotate(this.modelMatrix, this.modelMatrix, -1.57078, [1.0, 0.0, 0.0]);
+        mat4.perspective(this.projMatrix, 45, this.canvas.width / this.canvas.height, 0.1, 100.0);
+        
         mat4.identity(this.viewMatrix);
-        mat4.translate(this.viewMatrix, this.viewMatrix, [0.0, 0.0, -5.0]);
+        mat4.translate(this.viewMatrix, this.viewMatrix, [0.0, 0.0, -10.0]);
+
         this.setMatrixUniforms();
     };
 
@@ -55,7 +61,7 @@ class WebGL {
         this.setMatrix("projMatrix", this.projMatrix);
     }
 
-    async setUpShaders(vertexFile: URL, fragmentFile: URL) {
+    async setUpShaders(vertexFile: string, fragmentFile: string) {
         const [vertex, fragment] = await Promise.all([
            fetch(vertexFile).then(handleResponse),
            fetch(fragmentFile).then(handleResponse)
@@ -75,7 +81,7 @@ class WebGL {
         this.gl.useProgram(this.program);
     }
 
-    draw(vertex: Array<number>, index: Array<number>, normals: Array<number>, method: DrawMethod = DrawMethod.Smooth) {
+    draw(vertex: Array<number>, index: Array<number>, normals: Array<number>) {
         this.setMatrixUniforms();
         const vertexBuffer = this.createBuffer(vertex);
         const normalBuffer = this.createBuffer(normals);
@@ -86,7 +92,7 @@ class WebGL {
 
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 
-        switch (method) {
+        switch (this.method) {
             case DrawMethod.Smooth: {
                 this.gl.drawElements(this.gl.TRIANGLE_STRIP, index.length, this.gl.UNSIGNED_SHORT, 0);
                 break;
@@ -100,6 +106,10 @@ class WebGL {
 
     // Utility Methods
 
+    setDrawMethod(method: DrawMethod) {
+        this.method = method;
+    }
+
     setAttribute(buffer: WebGLBuffer, size: number, name: string) {
         const attributeLocation = this.gl.getAttribLocation(this.program, name);
         this.gl.enableVertexAttribArray(attributeLocation);
@@ -107,7 +117,11 @@ class WebGL {
         this.gl.vertexAttribPointer(attributeLocation, size, this.gl.FLOAT, false, 0 , 0); 
     }
 
-    //TODO: Try to replicate the demo via animating the sphere updating the matrices with setMatrix().
+    updateMatrices(model: mat4, view: mat4, normal: mat4) {
+        this.modelMatrix = model;
+        this.viewMatrix = view;
+        this.normalMatrix = normal;
+    }
 
     setMatrix(name: string, matrix: mat4) {
         var matrixUniform: WebGLUniformLocation = this.gl.getUniformLocation(this.program, name)!;
@@ -122,9 +136,7 @@ class WebGL {
     };
 
     createIndexBuffer(index: Array<number>): WebGLBuffer {
-        // TODO: Can't find a way to set the indexBuffer itemSize, says property not found.
         const buffer = this.gl.createBuffer()!;
-        //buffer.number_vertex_point = index.length;
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, buffer);
         this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index), this.gl.STATIC_DRAW);
         return buffer;
@@ -149,7 +161,7 @@ function handleResponse(response: Response) {
     return response.text();
 };
 
-enum DrawMethod {
+export enum DrawMethod {
     Smooth,
     Lines
 }
