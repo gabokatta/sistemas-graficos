@@ -1,6 +1,6 @@
 import type { vec3 } from "gl-matrix";
 import { buildBuffers, buildIndex, type Geometry } from "../geometry";
-import type { WebGL } from "../webgl";
+import { DrawMethod, type WebGL } from "../webgl";
 
 export class Cylinder implements Geometry {
 
@@ -46,9 +46,9 @@ export class Cylinder implements Geometry {
 
     draw(gl: WebGL): void {
         gl.draw(this.position, this.index, this.normal);
-        /*this.covers.forEach((c) => {
-            gl.draw(c.position, c.index, c.normal);
-        })*/
+        this.covers.forEach((c) => {
+            gl.draw(c.position, c.index, c.normal, DrawMethod.Fan);
+        })
     }
     
 }

@@ -89,23 +89,9 @@ export class WebGL {
 
         this.setAttribute(vertexBuffer, 3 , "aVertexPosition");
         this.setAttribute(normalBuffer, 3 , "aVertexNormal");
-
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 
-        switch (method) {
-            case DrawMethod.Smooth: {
-                this.gl.drawElements(this.gl.TRIANGLE_STRIP, index.length, this.gl.UNSIGNED_SHORT, 0);
-                break;
-            }
-            case DrawMethod.Lines: {
-                this.gl.drawElements(this.gl.LINE_STRIP, index.length, this.gl.UNSIGNED_SHORT, 0);
-                break;
-            }
-            case DrawMethod.Fan: {
-                this.gl.drawElements(this.gl.TRIANGLE_FAN, index.length, this.gl.UNSIGNED_SHORT, 0);
-                break;
-            }
-        }
+        this.gl.drawElements(this.method, index.length, this.gl.UNSIGNED_SHORT, 0);
     }
 
     // Utility Methods
@@ -185,9 +171,9 @@ function handleResponse(response: Response) {
 };
 
 export enum DrawMethod {
-    Smooth,
-    Lines,
-    Fan
+    Smooth = WebGLRenderingContext.TRIANGLE_STRIP,
+    Lines = WebGLRenderingContext.LINE_STRIP,
+    Fan = WebGLRenderingContext.TRIANGLE_FAN
 }
 
 

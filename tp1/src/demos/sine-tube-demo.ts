@@ -20,12 +20,12 @@ function to_rads(angle: number) {
 
 
 var sonTransforms: Transformation[] = [
-    Transformation.rotation(to_rads(45), [0,0,1]),
-    Transformation.translate([15, 0, 0])
+    Transformation.rotation(to_rads(45), [-1,0,0]),
+    Transformation.translate([10, 0, 0])
 ]
 
 var baseTransforms: Transformation[] = [
-    Transformation.translate([-5, -5, 0])
+    Transformation.translate([-5, -5, -10])
 ]
 
 var sonTube = new Object3D(new SinTube(300,300, 2, 0.3, 0.5, 15), sonTransforms, []);

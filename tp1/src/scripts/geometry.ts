@@ -19,12 +19,11 @@ export interface Geometry {
 
 export function buildIndex(geometry: Geometry): void{   
     var indexBuffer = [];
-    const indexCalc = (i: number, j: number) => (geometry.cols+1)*i + j;
-    for (var i=0; i < geometry.rows; i++) {
-        for (var j=0; j <= geometry.cols; j++) {
-            indexBuffer.push(indexCalc(i,j), indexCalc(i+1,j));
+    const indexCalc = (i: number, j: number) => j + (geometry.cols + 1) * i;
+    for (let i = 0; i < geometry.rows; i++){ 
+        for (let j = 0; j <= geometry.cols; j++) { 
+            indexBuffer.push(indexCalc(i, j), indexCalc(i + 1, j));
         }
-        indexBuffer.push(indexCalc(i+1, geometry.cols), indexCalc(i+1,0));
     }
     geometry.index = indexBuffer;
   }
