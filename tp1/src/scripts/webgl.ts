@@ -101,6 +101,10 @@ export class WebGL {
                 this.gl.drawElements(this.gl.LINE_STRIP, index.length, this.gl.UNSIGNED_SHORT, 0);
                 break;
             }
+            case DrawMethod.Fan: {
+                this.gl.drawElements(this.gl.TRIANGLE_FAN, index.length, this.gl.UNSIGNED_SHORT, 0);
+                break;
+            }
         }
     }
 
@@ -182,7 +186,8 @@ function handleResponse(response: Response) {
 
 export enum DrawMethod {
     Smooth,
-    Lines
+    Lines,
+    Fan
 }
 
 
