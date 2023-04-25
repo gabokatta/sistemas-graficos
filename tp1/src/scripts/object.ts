@@ -1,50 +1,49 @@
 import { mat4, vec3 } from "gl-matrix";
-import type { Geometry3D } from "./geometry";
+import type { Geometry } from "./geometry";
 import type { WebGL } from "./webgl";
 
 export class Object3D {
-    transformMatrix: mat4;
+    transform: mat4;
     transformations: Transformation[];
     children: Object3D[];
-    geometry: Geometry3D | null;
+    geometry: Geometry | null;
     color: vec3;
   
-    constructor(geometry = null, transformations= [], color = vec3.fromValues(1, 0, 0)) {
-      this.transformMatrix = mat4.create();
+    constructor(geometry = null, transformations= [], color = vec3.fromValues(0, 0, 0)) {
+      this.transform = mat4.create();
       this.transformations = transformations.reverse();
 
       this.children = [];
-
       this.geometry = geometry;
       this.color = color;
   
-      this.transformations.forEach((t) => this.applyTransformation(t, this.transformMatrix));
+      this.transformations.forEach((t) => this.applyTransformation(t, this.transform));
     }
   
-    draw(gl: WebGL, parentMatrix: mat4 = mat4.create()) {
+    draw(gl: WebGL, parent: mat4 = mat4.create()) {
 
-      const combinedMatrix = mat4.create();
-      mat4.multiply(combinedMatrix, parentMatrix, this.transformMatrix);
+      const m = mat4.create();
+      mat4.multiply(m, parent, this.transform);
 
       if (this.geometry) {
-        gl.setMatrix("modelMatrix", combinedMatrix);
-        this.geometry.draw(combinedMatrix);
+        gl.setMatrix("modelMatrix", m);
+        this.geometry.draw(gl);
       }
   
-      this.children.forEach((c) => c.draw(gl, combinedMatrix));
+      this.children.forEach((c) => c.draw(gl, m));
     }
   
     applyTransformation(transformation: Transformation, matrix: mat4): void {
       switch (transformation.type) {
         case TransformationType.Translation:
-          mat4.translate(this.transformMatrix, this.transformMatrix, transformation.getData());
+          mat4.translate(this.transform, this.transform, transformation.getData());
           break;
         case TransformationType.Scaling:
-          mat4.scale(this.transformMatrix, this.transformMatrix, transformation.getData());
+          mat4.scale(this.transform, this.transform, transformation.getData());
           break;
         case TransformationType.Rotation:
           var data: any = transformation.getRotData();
-          mat4.rotate(this.transformMatrix, this.transformMatrix, data[0], data[1]);
+          mat4.rotate(this.transform, this.transform, data[0], data[1]);
           break;
         default:
           console.warn(`Invalid transformation type: ${transformation.type}`);

@@ -1,8 +1,22 @@
-import type { mat4, vec3 } from "gl-matrix";
+import type { vec3 } from "gl-matrix";
+import type { WebGL } from "./webgl";
 
-export class Geometry3D {
+export interface Geometry {
 
-    draw(transformMatrix: mat4): void {
-      // To be implemented
-    }
-  }
+    index: number[];
+    position: number[];
+    normal: number[];
+
+    rows: number;
+    cols: number;
+
+    buildBuffers(): void;
+
+    getNormals(alfa: number, beta: number) : vec3;
+
+    getPosition(alfa: number, beta: number) : vec3;
+
+    buildIndex() : void;
+
+    draw(gl: WebGL): void;
+}
