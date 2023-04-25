@@ -117,10 +117,29 @@ export class WebGL {
         this.gl.vertexAttribPointer(attributeLocation, size, this.gl.FLOAT, false, 0 , 0); 
     }
 
-    updateMatrices(model: mat4, view: mat4, normal: mat4) {
-        this.modelMatrix = model;
+    setView(view: mat4) {
         this.viewMatrix = view;
+        this.setMatrix("viewMatrix", view);
+    }
+
+    setModel(model: mat4) {
+        this.modelMatrix = model;
+        this.setMatrix("modelMatrix", model);
+        this.setNormal();
+    }
+
+    setNormal() {
+        var normal = this.normalMatrix;
+        var model = this.modelMatrix;
+        var view = this.viewMatrix;
+
+        mat4.identity(this.normalMatrix);
+        mat4.multiply(normal,view,model);
+        mat4.invert(normal,normal);
+        mat4.transpose(normal,normal);
+
         this.normalMatrix = normal;
+        this.setMatrix("normalMatrix", normal);
     }
 
     setMatrix(name: string, matrix: mat4) {

@@ -4,12 +4,12 @@ import type { WebGL } from "./webgl";
 
 export class Object3D {
     transform: mat4;
-    transformations: Transformation[];
+    transformations: Transformation[] = [];
     children: Object3D[];
-    geometry: Geometry | null;
-    color: vec3;
+    geometry: Geometry;
+    color: number[];
   
-    constructor(geometry = null, transformations= [], color = vec3.fromValues(0, 0, 0)) {
+    constructor(geometry: Geometry, transformations: Transformation[], color = [0, 0, 0]) {
       this.transform = mat4.create();
       this.transformations = transformations.reverse();
 
@@ -26,7 +26,7 @@ export class Object3D {
       mat4.multiply(m, parent, this.transform);
 
       if (this.geometry) {
-        gl.setMatrix("modelMatrix", m);
+        gl.setModel(m);
         this.geometry.draw(gl);
       }
   
@@ -52,7 +52,9 @@ export class Object3D {
     }
   
     setChildren(children: Object3D[]): void {
-      this.children = children;
+      children.forEach((c) => {
+        this.children.push(c);
+      })
     }
 }
 
@@ -61,10 +63,22 @@ enum TransformationType {
     Rotation,
     Scaling,
   }
-  
-class Transformation {
+
+export class Transformation {
     type: TransformationType;
     data: number[];
+
+    static rotation(angle: number, axis: number[]): Transformation {
+      return new Transformation(TransformationType.Rotation, [angle, axis[0], axis[1], axis[2]]);
+    }
+
+    static scale(factors: number[]): Transformation {
+      return new Transformation(TransformationType.Scaling, factors);
+    }
+
+    static translate(movement: number[]): Transformation {
+      return new Transformation(TransformationType.Translation, movement);
+    }
 
     getData() : vec3 {
         return vec3.fromValues(this.data[0], this.data[1], this.data[2]);
