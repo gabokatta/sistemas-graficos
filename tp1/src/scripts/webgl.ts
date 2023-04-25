@@ -81,7 +81,7 @@ export class WebGL {
         this.gl.useProgram(this.program);
     }
 
-    draw(vertex: Array<number>, index: Array<number>, normals: Array<number>) {
+    draw(vertex: Array<number>, index: Array<number>, normals: Array<number>, method: DrawMethod = this.method) {
         this.setMatrixUniforms();
         const vertexBuffer = this.createBuffer(vertex);
         const normalBuffer = this.createBuffer(normals);
@@ -92,7 +92,7 @@ export class WebGL {
 
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 
-        switch (this.method) {
+        switch (method) {
             case DrawMethod.Smooth: {
                 this.gl.drawElements(this.gl.TRIANGLE_STRIP, index.length, this.gl.UNSIGNED_SHORT, 0);
                 break;
