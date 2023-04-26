@@ -1,6 +1,6 @@
-import type { vec3 } from "gl-matrix";
-import { buildBuffers, buildIndex, type Geometry } from "../geometry";
-import { DrawMethod, type WebGL } from "../webgl";
+import { vec3 } from "gl-matrix";
+import { buildBuffers, buildIndex, Geometry } from "../geometry";
+import { DrawMethod, WebGL } from "../webgl";
 
 export class Cylinder implements Geometry {
 
@@ -12,7 +12,7 @@ export class Cylinder implements Geometry {
         position: number[], 
         index: number[], 
         normal: number[]
-    }[] = [{position: [], index: [], normal: []}];
+    }[] = [];
 
     rows: number;
     cols: number;
@@ -31,17 +31,22 @@ export class Cylinder implements Geometry {
     };
 
     buildCovers() {
-        this.covers.forEach((c) => {
-
-        });
+        this.covers.push(fillTop(this), fillBottom(this));
     }
-
+    
     getNormals(alfa: number, beta: number): vec3 {
-        throw new Error("Method not implemented.");
+        const x = Math.cos(beta * 2 * Math.PI);
+        const y = Math.sin(beta * 2 * Math.PI);
+        const z = 0;
+      
+        return vec3.normalize(vec3.create(), vec3.fromValues(x, y, z));
     }
 
     getPosition(alfa: number, beta: number): vec3 {
-        throw new Error("Method not implemented.");
+        const x = this.radius * Math.cos(2 * Math.PI * beta);
+        const y = this.height * alfa - this.height / 2;
+        const z = this.radius * Math.sin(2 * Math.PI * beta);
+        return vec3.fromValues(x, y, z);
     }
 
     draw(gl: WebGL): void {
@@ -51,4 +56,14 @@ export class Cylinder implements Geometry {
         })
     }
     
+}
+
+function fillTop(cylinder: Geometry): {position: number[], index: number[], normal: number[]} {
+    var top = {position: [], index: [], normal: []};
+    return top;
+}
+
+function fillBottom(cylinder: Geometry): {position: number[], index: number[], normal: number[]} {
+    var bottom = {position: [], index: [], normal: []};
+    return bottom;
 }
