@@ -11,9 +11,7 @@ export interface Geometry {
     cols: number;
 
     getNormals(alfa: number, beta: number) : vec3;
-
     getPosition(alfa: number, beta: number) : vec3;
-
     draw(gl: WebGL): void;
 }
 
@@ -32,11 +30,11 @@ export function buildBuffers(geometry: Geometry): void  {
     var rows=geometry.rows;
     var cols=geometry.cols;
     
-    for (var i=0;i<rows;i++){
-        for (var j=0;j<cols;j++) {
+    for (var i=0;i<=rows;i++){
+        for (var j=0;j<=cols;j++) {
     
-            var alfa=j/cols;
-            var beta=i/rows;
+            var alfa=i/rows;
+            var beta=j/cols;
     
             var p = geometry.getPosition(alfa,beta);  
             geometry.position.push(...p);

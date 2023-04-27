@@ -67,9 +67,9 @@ function fillBottom(cylinder:  Cylinder): {position: number[], index: number[], 
     
     for (let j = 0; j <= cylinder.cols; j++) {
         const beta = j / cylinder.cols;
-        const position: vec3 = cylinder.getPosition(1, beta);
+        const position: vec3 = cylinder.getPosition(0, beta);
         bottom.position.push(...position)
-        bottom.normal.push(0,1,0);
+        bottom.normal.push(0,-1,0);
     }
 
     for (let j = 0; j <= cylinder.cols; j++) {
@@ -89,9 +89,9 @@ function fillTop(cylinder: Cylinder): {position: number[], index: number[], norm
     
     for (let j = 0; j <= cylinder.cols; j++) {
         const beta = j / cylinder.cols;
-        const position: vec3 = cylinder.getPosition(0, beta);
+        const position: vec3 = cylinder.getPosition(1, beta);
         top.position.push(...position)
-        top.normal.push(0,-1,0);
+        top.normal.push(0,1,0);
     }
 
     for (let j = 0; j <= cylinder.cols; j++) {

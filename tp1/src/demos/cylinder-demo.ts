@@ -1,4 +1,4 @@
-import { WebGL } from "../scripts/webgl"
+import { DrawMethod, WebGL } from "../scripts/webgl"
 import { Cylinder } from "../scripts/prefabs/cylinder";
 import { Object3D, Transformation } from "../scripts/object";
 
@@ -28,13 +28,13 @@ var sonTransforms = [
     Transformation.translate([-4, 0,0])
 ]
 
-var cylinderSon = new Object3D(new Cylinder(100,100, 1, 3), sonTransforms, []);
-var cylinder = new Object3D(new Cylinder(100,100, 1, 3), [], []);
+var cylinderSon = new Object3D(new Cylinder(60,60, 1, 3), sonTransforms, []);
+var cylinder = new Object3D(new Cylinder(60,60, 1, 3), [], []);
 cylinder.setChildren([cylinderSon]);
 tick();
 
-//TODO: NO ME COMPLETA EL CILINDRO POR ALCUNA RAZON.. :(
-//TODO: Las normales no me convecen del todo como estan pintadas
+
+//TODO: Alto numero de rows y columns hace que este mas lento.
 
 
 

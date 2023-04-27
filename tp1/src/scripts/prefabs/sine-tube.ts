@@ -51,12 +51,12 @@ export class SinTube implements Geometry {
     }
   
     getPosition(alfa: number, beta: number): vec3 {
-        const phi = alfa * Math.PI * 2;
-        const theta = beta * Math.PI * 2;
+        const phi = beta * Math.PI * 2;
+        const theta = alfa * Math.PI * 2;
         const sin_theta = Math.sin(theta / this.longitude);
       
         const x = (this.radio + this.amplitude * sin_theta) * Math.cos(phi);
-        const y = this.height * beta;
+        const y = this.height * alfa;
         const z = (this.radio + this.amplitude * sin_theta) * Math.sin(phi);
       
         return vec3.fromValues(x, y, z);
