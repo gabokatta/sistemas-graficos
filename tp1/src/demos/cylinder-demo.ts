@@ -1,7 +1,6 @@
 import { WebGL } from "../scripts/webgl"
 import { Cylinder } from "../scripts/prefabs/cylinder";
 import { Object3D, Transformation } from "../scripts/object";
-import { mat4 } from "gl-matrix";
 
 var canvas = <HTMLCanvasElement> document.getElementById("my-canvas")!;
 var gl =  await new WebGL(canvas).init();
@@ -33,6 +32,7 @@ var cylinderSon = new Object3D(new Cylinder(100,100, 1, 3), sonTransforms, []);
 var cylinder = new Object3D(new Cylinder(100,100, 1, 3), [], []);
 cylinder.setChildren([cylinderSon]);
 tick();
+
 //TODO: NO ME COMPLETA EL CILINDRO POR ALCUNA RAZON.. :(
 //TODO: Las normales no me convecen del todo como estan pintadas
 
