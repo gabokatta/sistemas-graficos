@@ -14,5 +14,9 @@ var baseTransforms: Transformation[] = [
     Transformation.rotation(to_rads(90), [0, 1, 0]),
 ]
 
+//TODO: NO ME COMPLETA EL CILINDRO POR ALCUNA RAZON.. :(
+//TODO: Las normales no me convecen del todo como estan pintadas
+
+
 var cylinder = new Object3D(new Cylinder(100,100, 1, 3), baseTransforms, []);
 cylinder.draw(gl);

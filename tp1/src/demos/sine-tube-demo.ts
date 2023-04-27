@@ -5,8 +5,11 @@ import { SinTube } from "../scripts/forms/sine-tube";
 
 var canvas = <HTMLCanvasElement> document.getElementById("my-canvas")!;
 var gl =  await new WebGL(canvas).init();
-//gl.setDrawMethod(DrawMethod.Lines);
 
+
+//TODO: Observar que pasa cuando se dibuja con lineas.
+//gl.setDrawMethod(DrawMethod.Lines);
+//TODO: Las normales no me convecen del todo como estan pintadas
 
 function tick(){
     //requestAnimationFrame(tick);
@@ -28,9 +31,9 @@ var baseTransforms: Transformation[] = [
     Transformation.translate([-5, -5, -10])
 ]
 
-var sonTube = new Object3D(new SinTube(300,300, 2, 0.3, 0.5, 15), sonTransforms, []);
+var sonTube = new Object3D(new SinTube(100,100, 2, 0.3, 0.5, 15), sonTransforms, []);
 
-var tube = new Object3D(new SinTube(300,300, 2, 0.3, 0.5, 15), baseTransforms, []);
+var tube = new Object3D(new SinTube(100,100, 2, 0.3, 0.5, 15), baseTransforms, []);
 tube.setChildren([sonTube]);
 
 tick();
