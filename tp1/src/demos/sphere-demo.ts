@@ -1,5 +1,5 @@
 import { WebGL } from "../scripts/webgl"
-import { Sphere } from "../scripts/forms/sphere";
+import { Sphere } from "../scripts/prefabs/sphere";
 import { Object3D, Transformation } from "../scripts/object";
 
 var canvas = <HTMLCanvasElement> document.getElementById("my-canvas")!;

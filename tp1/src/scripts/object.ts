@@ -17,7 +17,7 @@ export class Object3D {
       this.geometry = geometry;
       this.color = color;
   
-      this.transformations.forEach((t) => this.applyTransformation(t, this.transform));
+      this.transformations.forEach((t) => this.applyTransformation(t));
     }
   
     draw(gl: WebGL, parent: mat4 = mat4.create()) {
@@ -33,7 +33,7 @@ export class Object3D {
       this.children.forEach((c) => c.draw(gl, m));
     }
   
-    applyTransformation(transformation: Transformation, matrix: mat4): void {
+    applyTransformation(transformation: Transformation): void {
       switch (transformation.type) {
         case TransformationType.Translation:
           mat4.translate(this.transform, this.transform, transformation.getData());
@@ -49,6 +49,16 @@ export class Object3D {
           console.warn(`Invalid transformation type: ${transformation.type}`);
           break;
       }
+    }
+
+    updateTransform(newTransforms: Transformation[]){
+      mat4.identity(this.transform);
+      // Reapply base transformations.
+      this.transformations.forEach((t) => this.applyTransformation(t));
+      // Apply new transforms.
+      newTransforms.forEach((t) => {
+        this.applyTransformation(t);
+      })
     }
   
     setChildren(children: Object3D[]): void {

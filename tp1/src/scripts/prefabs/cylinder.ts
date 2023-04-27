@@ -58,12 +58,46 @@ export class Cylinder implements Geometry {
     
 }
 
-function fillTop(cylinder: Geometry): {position: number[], index: number[], normal: number[]} {
-    var top = {position: [], index: [], normal: []};
-    return top;
+function fillBottom(cylinder:  Cylinder): {position: number[], index: number[], normal: number[]} {
+    var bottom:  {position: number[], index: number[], normal: number[]}  = {position: [], index: [], normal: []};
+
+    const center: vec3 = [0, -cylinder.height / 2 ,0];
+    bottom.position.push(...center);
+    const bottomCenterIndex = bottom.position.length;
+    
+    for (let j = 0; j <= cylinder.cols; j++) {
+        const beta = j / cylinder.cols;
+        const position: vec3 = cylinder.getPosition(1, beta);
+        bottom.position.push(...position)
+        bottom.normal.push(0,1,0);
+    }
+
+    for (let j = 0; j <= cylinder.cols; j++) {
+        bottom.index.push(bottomCenterIndex, j+1, j);
+    }
+    bottom.index.push(bottomCenterIndex, 0, cylinder.cols);
+
+    return bottom;
 }
 
-function fillBottom(cylinder: Geometry): {position: number[], index: number[], normal: number[]} {
-    var bottom = {position: [], index: [], normal: []};
-    return bottom;
+function fillTop(cylinder: Cylinder): {position: number[], index: number[], normal: number[]} {
+    var top:  {position: number[], index: number[], normal: number[]}  = {position: [], index: [], normal: []};
+
+    const center: vec3 = [0, cylinder.height / 2 , 0];
+    top.position.push(...center);
+    const topCenterIndex = top.position.length;
+    
+    for (let j = 0; j <= cylinder.cols; j++) {
+        const beta = j / cylinder.cols;
+        const position: vec3 = cylinder.getPosition(0, beta);
+        top.position.push(...position)
+        top.normal.push(0,-1,0);
+    }
+
+    for (let j = 0; j <= cylinder.cols; j++) {
+        top.index.push(topCenterIndex, j+1,j);
+    }
+    top.index.push(topCenterIndex, 0, cylinder.cols);
+
+    return top;
 }
