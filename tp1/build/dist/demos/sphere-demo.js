@@ -9,7 +9,7 @@ let angle = 0;
 let inverse = true;
 function animate(t) {
   sphere.updateTransform([
-    Transformation.rotation(t / 2, [0, 1, 0])
+    Transformation.rotation(t * 2, [1, 0, 1])
   ]);
   let u;
   const mod = (n) => {
