@@ -11,7 +11,7 @@
 
 ## Trabajos Practicos
 
-- <a href="https://gabokatta.github.io/sistemas-graficos/tp1/docs">TP1</a>
+- <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build">TP1</a>
 
 
 ## Bibliografía
