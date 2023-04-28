@@ -2,8 +2,11 @@ import { DrawMethod, WebGL } from "../scripts/webgl"
 import { Cylinder } from "../scripts/prefabs/cylinder";
 import { Object3D, Transformation } from "../scripts/object";
 
+const vertexShaderPath = '../dist/shaders/vertex.glsl';
+const fragmentShaderPath = '../dist/shaders/fragment.glsl';
+
 var canvas = <HTMLCanvasElement> document.getElementById("my-canvas")!;
-var gl =  await new WebGL(canvas).init();
+var gl =  await new WebGL(canvas).init(vertexShaderPath, fragmentShaderPath);
 var angle = 0;
 var inverse = true;
 

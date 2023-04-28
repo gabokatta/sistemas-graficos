@@ -2,9 +2,47 @@ import { WebGL } from "../scripts/webgl"
 import { Sphere } from "../scripts/prefabs/sphere";
 import { Object3D, Transformation } from "../scripts/object";
 
-var canvas = <HTMLCanvasElement> document.getElementById("my-canvas")!;
-var gl =  await new WebGL(canvas).init();
+const vertexShaderPath = '../dist/shaders/vertex.glsl';
+const fragmentShaderPath = '../dist/shaders/fragment.glsl';
 
+var canvas = <HTMLCanvasElement> document.getElementById("my-canvas")!;
+var gl =  await new WebGL(canvas).init(vertexShaderPath,  fragmentShaderPath);
+let angle = 0;
+let inverse = true;
+
+function animate(t: number) {
+    sphere.updateTransform([
+        Transformation.rotation(t/2, [0,1,0])
+    ]);
+
+
+    let u;
+    const mod = (n: number) => {return Number((n).toFixed(2)) % 2;}
+
+    if (mod(t) == 0) {
+        inverse = !inverse;
+    }
+
+    u =  inverse ? mod(t) : 2 - mod(t);
+
+
+    sonSphere.updateTransform([
+        Transformation.translate([u,u,0])
+    ]);
+    sonSphere2.updateTransform([
+        Transformation.translate([-u,u,0])
+    ]);
+    sonSphere3.updateTransform([
+        Transformation.translate([0,0,u])
+    ]);
+}
+
+function tick() {
+    requestAnimationFrame(tick);
+    sphere.draw(gl);
+    angle += 0.01
+    animate(angle);
+}
 
 function to_rads(angle: number) {
     return (Math.PI*angle) / 180;
@@ -37,4 +75,4 @@ var sphere = new Object3D(new Sphere(60,60, 4), [
 []
 );
 sphere.setChildren([sonSphere, sonSphere2, sonSphere3]);
-sphere.draw(gl);
+tick();
