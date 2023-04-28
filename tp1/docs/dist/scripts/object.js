@@ -1,4 +1,4 @@
-import {mat4, vec3} from "../../_snowpack/pkg/gl-matrix.js";
+import {mat4, vec3} from "../../snowpack/pkg/gl-matrix.js";
 export class Object3D {
   constructor(geometry, transformations, color = [0, 0, 0]) {
     this.transformations = [];

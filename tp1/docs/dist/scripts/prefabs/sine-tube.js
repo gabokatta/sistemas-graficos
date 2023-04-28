@@ -1,13 +1,16 @@
-import {vec3} from "../../../_snowpack/pkg/gl-matrix.js";
+import {vec3} from "../../../snowpack/pkg/gl-matrix.js";
 import {buildBuffers, buildIndex} from "../geometry.js";
-export class Sphere {
-  constructor(rows, cols, radius) {
+export class SinTube {
+  constructor(rows, cols, radio, amplitude, longitude, height) {
     this.index = [];
     this.position = [];
     this.normal = [];
     this.rows = rows;
     this.cols = cols;
-    this.radius = radius;
+    this.amplitude = amplitude;
+    this.longitude = longitude;
+    this.height = height;
+    this.radio = radio;
     buildBuffers(this);
     buildIndex(this);
   }
@@ -29,11 +32,12 @@ export class Sphere {
     return n;
   }
   getPosition(alfa, beta) {
-    const theta = alfa * 2 * Math.PI;
-    const phi = (beta - 0.5) * Math.PI;
-    var x = this.radius * Math.cos(phi) * Math.cos(theta);
-    var y = this.radius * Math.sin(phi);
-    var z = this.radius * Math.cos(phi) * Math.sin(theta);
+    const phi = beta * Math.PI * 2;
+    const theta = alfa * Math.PI * 2;
+    const sin_theta = Math.sin(theta / this.longitude);
+    const x = (this.radio + this.amplitude * sin_theta) * Math.cos(phi);
+    const y = this.height * alfa;
+    const z = (this.radio + this.amplitude * sin_theta) * Math.sin(phi);
     return vec3.fromValues(x, y, z);
   }
   draw(gl) {

@@ -1,4 +1,4 @@
-import {vec3} from "../../../_snowpack/pkg/gl-matrix.js";
+import {vec3} from "../../../snowpack/pkg/gl-matrix.js";
 import {buildBuffers, buildIndex} from "../geometry.js";
 import {DrawMethod} from "../webgl.js";
 export class Cylinder {

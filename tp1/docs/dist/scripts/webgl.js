@@ -1,4 +1,4 @@
-import {mat4} from "../../_snowpack/pkg/gl-matrix.js";
+import {mat4} from "../../snowpack/pkg/gl-matrix.js";
 const vertexShaderPath = "../dist/shaders/vertex.glsl";
 const fragmentShaderPath = "../dist/shaders/fragment.glsl";
 export class WebGL {
