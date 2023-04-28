@@ -59,9 +59,3 @@ var cylinderSon2 = new Object3D(new Cylinder(60,60, 1, 3), son2Transforms, []);
 var cylinder = new Object3D(new Cylinder(60,60, 1, 3), [], []);
 cylinder.setChildren([cylinderSon, cylinderSon2]);
 tick();
-
-
-//TODO: Alto numero de rows y columns hace que este mas lento.
-
-
-

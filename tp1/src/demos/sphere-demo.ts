@@ -1,4 +1,4 @@
-import { WebGL } from "../scripts/webgl"
+import { DrawMethod, WebGL } from "../scripts/webgl"
 import { Sphere } from "../scripts/prefabs/sphere";
 import { Object3D, Transformation } from "../scripts/object";
 
@@ -12,7 +12,7 @@ let inverse = true;
 
 function animate(t: number) {
     sphere.updateTransform([
-        Transformation.rotation(t/2, [0,1,0])
+        Transformation.rotation(t*2, [1,0,1]),
     ]);
 
 
@@ -60,8 +60,6 @@ var sonTransforms3: Transformation[] = [
     Transformation.rotation(to_rads(60), [0,0,1]),
     Transformation.translate([0, 0, 4.5])
 ]
-
-// TODO: Tras cierto numero de rows/columns, se deforman las esferas. Ej: 300
 
 var sonSphere3 = new Object3D(new Sphere(60,60, 0.5), sonTransforms3, []);
 var sonSphere2 = new Object3D(new Sphere(60,60, 2), sonTransforms2, []);
