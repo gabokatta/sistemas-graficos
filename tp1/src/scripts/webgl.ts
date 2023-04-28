@@ -1,7 +1,7 @@
 import { mat4 , vec3 } from "gl-matrix";
 
-const vertexShaderPath = '../dist/shaders/vertex.glsl';
-const fragmentShaderPath = '../dist/shaders/fragment.glsl';
+const vertexShaderPath = 'dist/shaders/vertex.glsl';
+const fragmentShaderPath = 'dist/shaders/fragment.glsl';
 
 export class WebGL {
 
