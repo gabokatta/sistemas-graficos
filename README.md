@@ -12,6 +12,9 @@
 ## Trabajos Practicos
 
 - <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build">TP1</a>
+- <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build/demos/sphere.html">TP1 - DEMO ESFERA</a>
+- <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build/demos/cylinder.html">TP1 - DEMO CILINDRO</a>
+- <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build/demos/sinetube.html">TP1 - DEMO TUBO SENOIDAL</a>
 
 
 ## Bibliografía
