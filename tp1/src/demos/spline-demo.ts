@@ -34,6 +34,8 @@ points.forEach((p) => {
 var global_u = 0;
 var curve = new BSpline(points, CurveLevel.CUBIC);
 
+// TODO: BSpline cubic tangent is not working properly.
+
 
 function drawVector(x1: number, y1: number, x2: number, y2: number, color: string) {
     ctx.beginPath();

@@ -50,9 +50,9 @@ function cuadraticDer() {
 }
 function cubicDer() {
   return [
-    (u) => -0.5 * (1 - u) * (1 - u),
-    (u) => -1.5 * u * u + 2 * u,
-    (u) => 1.5 * u * u - u,
-    (u) => 0.5 * u * u
+    (u) => (-3 + 6 * u - 3 * u * u) / 6,
+    (u) => (-12 * u + 9 * u * u) / 6,
+    (u) => (3 + 6 * u - 9 * u * u) / 6,
+    (u) => 3 * u * u * 1 / 6
   ];
 }
