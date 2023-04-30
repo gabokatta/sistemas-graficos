@@ -5,6 +5,7 @@ export class Curve {
     this.dB = [];
     this.controlPoints = points;
     this.level = level;
+    this.segments = this.buildSegments();
   }
 }
 export class Segment {

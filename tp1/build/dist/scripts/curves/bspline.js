@@ -13,6 +13,9 @@ export class BSpline extends Curve {
       }
     }
   }
+  buildSegments() {
+    throw new Error("Method not implemented.");
+  }
 }
 function cuadraticBases() {
   return [
