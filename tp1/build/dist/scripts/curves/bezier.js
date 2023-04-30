@@ -6,12 +6,21 @@ export class Bezier extends Curve {
       case CurveLevel.CUADRATIC: {
         this.B = cuadraticBases();
         this.dB = cuadraticDer();
+        break;
       }
       case CurveLevel.CUBIC: {
         this.B = cubicBases();
         this.dB = cubicDer();
+        break;
       }
     }
+  }
+  segmentPoints(segment) {
+    return this.level == CurveLevel.CUBIC ? this.controlPoints.slice(segment * 3, segment * 3 + 4) : this.controlPoints.slice(segment * 2, segment * 2 + 3);
+  }
+  getSegmentAmount() {
+    const n = this.controlPoints.length;
+    return (n - 1) / this.level;
   }
 }
 function cuadraticBases() {

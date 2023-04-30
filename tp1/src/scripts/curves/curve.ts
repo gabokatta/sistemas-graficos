@@ -14,7 +14,39 @@ export abstract class Curve  {
         this.segments = this.buildSegments();
     }
 
-    abstract buildSegments(): Segment[];
+    //TODO: Search creation restrictions for each type of curve and level.
+    //TODO: make normal (convexity) computing configurable per segment.
+
+    draw(ctx: CanvasRenderingContext2D):void {
+        this.segments.forEach((s) => {
+            s.drawOnCanvas(ctx, true);
+        });
+    }
+
+    buildSegments(): Segment[] {
+        this.validateControlPoints();
+        let segments: Segment[] = [];
+        let segAmount = this.getSegmentAmount();
+        for (let i = 0; i < segAmount; i++) {
+          let points = this.segmentPoints(i);
+          segments.push(new Segment(points, this)); 
+        }
+        return segments;
+    }
+
+    abstract getSegmentAmount(): number;
+    abstract segmentPoints(segment: number): vec3[]
+
+    validateControlPoints(): void {
+        const n = this.controlPoints.length;
+        let valid = this.level == CurveLevel.CUADRATIC 
+        ? (n >= 3 && (n - 1) % 2 === 0) 
+        : (n >= 4 && (n - 1) % 3 === 0);
+        if (!valid) {
+            throw new Error("Invalid amount of control points.");
+        }
+      }
+
 }
 
 
@@ -24,7 +56,7 @@ export class Segment {
     convexity: number;
     curve: Curve;
 
-    constructor(points: vec3[] = [], convexity: number = -1, curve: Curve) {
+    constructor(points: vec3[] = [], curve: Curve, convexity: number = -1) {
         this.controlPoints = points;
         this.convexity = convexity;
         this.curve = curve;
@@ -49,10 +81,9 @@ export class Segment {
         }
 
         ctx.beginPath();
-        ctx.strokeStyle = "#000FF";
-        ctx.moveTo(p[0][0], p[0][1]);
+        ctx.strokeStyle = "#000";
         for (let u = 0; u <= 1.001; u += delta) {
-            const p = this.getPoint(u);
+            const p: vec3 = this.getPoint(u);
             ctx.lineTo(p[0], p[1]);
         }   
         ctx.stroke();
@@ -110,8 +141,8 @@ export class Segment {
 }
 
 export enum CurveLevel {
-    CUADRATIC,
-    CUBIC
+    CUADRATIC = 2,
+    CUBIC = 3
 }
 
 

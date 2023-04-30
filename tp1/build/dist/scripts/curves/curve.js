@@ -5,10 +5,33 @@ export class Curve {
     this.dB = [];
     this.controlPoints = points;
     this.level = level;
+    this.segments = this.buildSegments();
+  }
+  draw(ctx) {
+    this.segments.forEach((s) => {
+      s.drawOnCanvas(ctx, true);
+    });
+  }
+  buildSegments() {
+    this.validateControlPoints();
+    let segments = [];
+    let segAmount = this.getSegmentAmount();
+    for (let i = 0; i < segAmount; i++) {
+      let points = this.segmentPoints(i);
+      segments.push(new Segment(points, this));
+    }
+    return segments;
+  }
+  validateControlPoints() {
+    const n = this.controlPoints.length;
+    let valid = this.level == CurveLevel.CUADRATIC ? n >= 3 && (n - 1) % 2 === 0 : n >= 4 && (n - 1) % 3 === 0;
+    if (!valid) {
+      throw new Error("Invalid amount of control points.");
+    }
   }
 }
 export class Segment {
-  constructor(points = [], convexity = -1, curve) {
+  constructor(points = [], curve, convexity = -1) {
     this.controlPoints = points;
     this.convexity = convexity;
     this.curve = curve;
@@ -30,8 +53,7 @@ export class Segment {
       ctx.stroke();
     }
     ctx.beginPath();
-    ctx.strokeStyle = "#000FF";
-    ctx.moveTo(p[0][0], p[0][1]);
+    ctx.strokeStyle = "#000";
     for (let u = 0; u <= 1.001; u += delta) {
       const p2 = this.getPoint(u);
       ctx.lineTo(p2[0], p2[1]);
@@ -84,6 +106,6 @@ export class Segment {
 }
 export var CurveLevel;
 (function(CurveLevel2) {
-  CurveLevel2[CurveLevel2["CUADRATIC"] = 0] = "CUADRATIC";
-  CurveLevel2[CurveLevel2["CUBIC"] = 1] = "CUBIC";
+  CurveLevel2[CurveLevel2["CUADRATIC"] = 2] = "CUADRATIC";
+  CurveLevel2[CurveLevel2["CUBIC"] = 3] = "CUBIC";
 })(CurveLevel || (CurveLevel = {}));

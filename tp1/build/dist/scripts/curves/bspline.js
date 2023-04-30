@@ -6,12 +6,20 @@ export class BSpline extends Curve {
       case CurveLevel.CUADRATIC: {
         this.B = cuadraticBases();
         this.dB = cuadraticDer();
+        break;
       }
       case CurveLevel.CUBIC: {
         this.B = cubicBases();
         this.dB = cubicDer();
+        break;
       }
     }
+  }
+  getSegmentAmount() {
+    return this.controlPoints.length - this.level;
+  }
+  segmentPoints(segment) {
+    return this.controlPoints.slice(segment, segment + this.level + 1);
   }
 }
 function cuadraticBases() {
@@ -31,7 +39,7 @@ function cubicBases() {
 }
 function cuadraticDer() {
   return [
-    (u) => -1 * (1 - u),
+    (u) => -1 + u,
     (u) => 1 - 2 * u,
     (u) => u
   ];

@@ -2,25 +2,35 @@ import type { vec3 } from "gl-matrix";
 import { CurveLevel, Curve, Segment } from "./curve";
 
 export class Bezier extends Curve {
-  
+    
     constructor(points: vec3[], level: CurveLevel) {
         super(points, level);
         switch (this.level) {
             case CurveLevel.CUADRATIC: {
                 this.B = cuadraticBases();
                 this.dB = cuadraticDer();
+                break;
             }
             case CurveLevel.CUBIC: {
                 this.B = cubicBases();
                 this.dB = cubicDer();
+                break;
             }
         }
     }
-    
-    buildSegments(): Segment[] {
-      throw new Error("Method not implemented.");
+
+    segmentPoints(segment: number): vec3[] {
+      return this.level == CurveLevel.CUBIC 
+      ? this.controlPoints.slice(segment * 3, segment  * 3 + 4)
+      : this.controlPoints.slice(segment * 2, segment  * 2 + 3);
+    }
+
+    getSegmentAmount(): number {
+      const n = this.controlPoints.length;
+      return (n-1)/this.level;
     }
 }
+
 
    function cuadraticBases(): Function[] {
     return [
