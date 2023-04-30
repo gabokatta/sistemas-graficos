@@ -1,8 +1,8 @@
 import type { vec3 } from "gl-matrix";
-import { CurveLevel, Curve } from "./curve";
+import { CurveLevel, Curve, Segment } from "./curve";
 
 export class Bezier extends Curve {
-    
+  
     constructor(points: vec3[], level: CurveLevel) {
         super(points, level);
         switch (this.level) {
@@ -15,7 +15,11 @@ export class Bezier extends Curve {
                 this.dB = cubicDer();
             }
         }
-    } 
+    }
+    
+    buildSegments(): Segment[] {
+      throw new Error("Method not implemented.");
+    }
 }
 
    function cuadraticBases(): Function[] {

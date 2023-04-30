@@ -1,5 +1,5 @@
 import type { vec3 } from "gl-matrix";
-import { Curve, CurveLevel } from "./curve";
+import { Curve, CurveLevel, Segment } from "./curve";
 
 export class BSpline extends Curve {
 
@@ -18,6 +18,11 @@ export class BSpline extends Curve {
             }
         }
     }
+
+    buildSegments(): Segment[] {
+      throw new Error("Method not implemented.");
+    }
+
 }
 
 function cuadraticBases(): Function[] {

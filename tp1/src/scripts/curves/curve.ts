@@ -4,14 +4,17 @@ export abstract class Curve  {
 
     controlPoints: vec3[];
     level: CurveLevel;
+    segments: Segment[];
     B: Function[] = [];
     dB: Function[]  = [];
 
     constructor(points: vec3[], level: CurveLevel) {
         this.controlPoints = points;
         this.level = level;
+        this.segments = this.buildSegments();
     }
 
+    abstract buildSegments(): Segment[];
 }
 
 
