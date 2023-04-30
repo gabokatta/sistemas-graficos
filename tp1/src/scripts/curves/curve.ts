@@ -11,25 +11,6 @@ export abstract class Curve  {
         this.controlPoints = points;
         this.level = level;
     }
-    
-    applyBases(u: number, points: vec3[], bases: Function[]): vec3{
-        let x, y, z;
-        let p0 = points[0];
-        let p1 = points[1];
-        let p2 = points[2];
-        if (this.level === CurveLevel.CUADRATIC) {
-            x = bases[0](u)*p0[0] + bases[1](u)*p1[0] + bases[2](u)*p2[0];
-            y = bases[0](u)*p0[1] + bases[1](u)*p1[1] + bases[2](u)*p2[1];
-            z = bases[0](u)*p0[2] + bases[1](u)*p1[2] + bases[2](u)*p2[2];
-        }
-        else {
-            let p3 = points[3];
-            x = bases[0](u)*p0[0] + bases[1](u)*p1[0] + bases[2](u)*p2[0] + bases[3](u)*p3[0];
-            y = bases[0](u)*p0[1] + bases[1](u)*p1[1] + bases[2](u)*p2[1] + bases[3](u)*p3[1];
-            z = bases[0](u)*p0[2] + bases[1](u)*p1[2] + bases[2](u)*p2[2] + bases[3](u)*p3[2];
-        }
-        return vec3.fromValues(x,y,z);
-    }
 
 }
 

@@ -3,10 +3,6 @@ import { CurveLevel, Curve } from "./curve";
 
 export class Bezier extends Curve {
     
-    controlPoints: vec3[] = [];
-    B: Function[] = [];
-    dB: Function[] = [];
-
     constructor(points: vec3[], level: CurveLevel) {
         super(points, level);
         switch (this.level) {
