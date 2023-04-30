@@ -1,26 +1,35 @@
 import { vec3 } from "gl-matrix";
 
+
+export const DEFAULT_DELTA: number = 0.01;
+
 export abstract class Curve  {
 
     controlPoints: vec3[];
     level: CurveLevel;
+
     segments: Segment[];
+    length: number = 0;
+
     B: Function[] = [];
     dB: Function[]  = [];
 
-    constructor(points: vec3[], level: CurveLevel) {
+    constructor(points: vec3[], level: CurveLevel) { 
         this.controlPoints = points;
         this.level = level;
         this.segments = this.buildSegments();
     }
-
-    //TODO: Search creation restrictions for each type of curve and level.
     //TODO: make normal (convexity) computing configurable per segment.
 
     draw(ctx: CanvasRenderingContext2D):void {
         this.segments.forEach((s) => {
             s.drawOnCanvas(ctx, true);
         });
+    }
+
+    getPointData(u: number): {point: vec3, normal: vec3, binormal: vec3, tangent: vec3} {
+        const {segment, localU} = this.coordToSegment(u);
+        return segment.evaluate(localU); 
     }
 
     buildSegments(): Segment[] {
@@ -34,8 +43,22 @@ export abstract class Curve  {
         return segments;
     }
 
-    abstract getSegmentAmount(): number;
-    abstract segmentPoints(segment: number): vec3[]
+    coordToSegment(u: number): {segment: Segment, localU: number} {
+        let resultSegment = undefined;
+        for (let s of this.segments) {
+            let globalLength  = s.length / this.length;
+            if (u <= globalLength) {
+                resultSegment = s;
+                break;
+            }
+            u -= globalLength;
+        }
+        if (resultSegment == undefined) {
+            return {segment: this.segments[-1], localU: 1};
+        }
+        const localU = u / (resultSegment.length / this.length);
+        return {segment: resultSegment, localU: localU};
+    }
 
     validateControlPoints(): void {
         const n = this.controlPoints.length;
@@ -45,7 +68,10 @@ export abstract class Curve  {
         if (!valid) {
             throw new Error("Invalid amount of control points.");
         }
-      }
+    }
+
+    abstract getSegmentAmount(): number;
+    abstract segmentPoints(segment: number): vec3[]
 
 }
 
@@ -55,8 +81,9 @@ export class Segment {
     controlPoints: vec3[];
     convexity: number;
     curve: Curve;
+    length: number = 0;
 
-    constructor(points: vec3[] = [], curve: Curve, convexity: number = -1) {
+    constructor(points: vec3[] = [], curve: Curve, convexity: number = 1, length: number = 0.01) {
         this.controlPoints = points;
         this.convexity = convexity;
         this.curve = curve;
@@ -89,10 +116,11 @@ export class Segment {
         ctx.stroke();
     }
 
-    evaluate(u: number): {point: vec3, normal: vec3, binormal: vec3, tangent: vec3} {
-        let tangent: vec3 = this.getTangent(u);
-        let normal = vec3.normalize(vec3.create(), vec3.cross(vec3.create(), tangent, vec3.fromValues(0,0,this.convexity)));
-        let binormal = vec3.normalize(vec3.create(), vec3.cross(vec3.create(), tangent, normal));
+    evaluate(u: number, delta: number = DEFAULT_DELTA): {point: vec3, normal: vec3, binormal: vec3, tangent: vec3} {
+        let tangent: vec3 = vec3.normalize(vec3.create(), this.getTangent(u));
+        let binormal = vec3.normalize(vec3.create(), this.getBinormal(u, delta, tangent));
+        let normal = vec3.normalize(vec3.create(), vec3.cross(vec3.create(), binormal, tangent));
+
         return {
             point: this.getPoint(u),
             tangent: tangent,
@@ -109,7 +137,15 @@ export class Segment {
         return vec3.normalize(vec3.create(), this.applyBases(u, this.curve.dB, this.curve.level));
     }
 
-    getLength(delta:number = 0.1): number {
+    getBinormal(u: number, delta: number, tangent: vec3) {
+        let current = this.getPoint(u);
+        let next =  this.getPoint(u + delta);
+        let vector = vec3.sub(vec3.create(), current, next);
+        vec3.scale(vector, vector, this.convexity);
+        return vec3.cross(vec3.create(), tangent, vector);
+    }
+
+    getLength(delta:number): number {
         let length = 0;
         for (let u = 0; u < 1 - delta; u += delta){
             let curr_p = this.getPoint(u);

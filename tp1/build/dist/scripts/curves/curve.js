@@ -1,6 +1,8 @@
 import {vec3} from "../../../snowpack/pkg/gl-matrix.js";
+export const DEFAULT_DELTA = 0.01;
 export class Curve {
   constructor(points, level) {
+    this.length = 0;
     this.B = [];
     this.dB = [];
     this.controlPoints = points;
@@ -12,6 +14,10 @@ export class Curve {
       s.drawOnCanvas(ctx, true);
     });
   }
+  getPointData(u) {
+    const {segment, localU} = this.coordToSegment(u);
+    return segment.evaluate(localU);
+  }
   buildSegments() {
     this.validateControlPoints();
     let segments = [];
@@ -22,6 +28,22 @@ export class Curve {
     }
     return segments;
   }
+  coordToSegment(u) {
+    let resultSegment = void 0;
+    for (let s of this.segments) {
+      let globalLength = s.length / this.length;
+      if (u <= globalLength) {
+        resultSegment = s;
+        break;
+      }
+      u -= globalLength;
+    }
+    if (resultSegment == void 0) {
+      return {segment: this.segments[-1], localU: 1};
+    }
+    const localU = u / (resultSegment.length / this.length);
+    return {segment: resultSegment, localU};
+  }
   validateControlPoints() {
     const n = this.controlPoints.length;
     let valid = this.level == CurveLevel.CUADRATIC ? n >= 3 && (n - 1) % 2 === 0 : n >= 4 && (n - 1) % 3 === 0;
@@ -31,7 +53,8 @@ export class Curve {
   }
 }
 export class Segment {
-  constructor(points = [], curve, convexity = -1) {
+  constructor(points = [], curve, convexity = 1, length = 0.01) {
+    this.length = 0;
     this.controlPoints = points;
     this.convexity = convexity;
     this.curve = curve;
@@ -60,10 +83,10 @@ export class Segment {
     }
     ctx.stroke();
   }
-  evaluate(u) {
-    let tangent = this.getTangent(u);
-    let normal = vec3.normalize(vec3.create(), vec3.cross(vec3.create(), tangent, vec3.fromValues(0, 0, this.convexity)));
-    let binormal = vec3.normalize(vec3.create(), vec3.cross(vec3.create(), tangent, normal));
+  evaluate(u, delta = DEFAULT_DELTA) {
+    let tangent = vec3.normalize(vec3.create(), this.getTangent(u));
+    let binormal = vec3.normalize(vec3.create(), this.getBinormal(u, delta, tangent));
+    let normal = vec3.normalize(vec3.create(), vec3.cross(vec3.create(), binormal, tangent));
     return {
       point: this.getPoint(u),
       tangent,
@@ -77,7 +100,14 @@ export class Segment {
   getTangent(u) {
     return vec3.normalize(vec3.create(), this.applyBases(u, this.curve.dB, this.curve.level));
   }
-  getLength(delta = 0.1) {
+  getBinormal(u, delta, tangent) {
+    let current = this.getPoint(u);
+    let next = this.getPoint(u + delta);
+    let vector = vec3.sub(vec3.create(), current, next);
+    vec3.scale(vector, vector, this.convexity);
+    return vec3.cross(vec3.create(), tangent, vector);
+  }
+  getLength(delta) {
     let length = 0;
     for (let u = 0; u < 1 - delta; u += delta) {
       let curr_p = this.getPoint(u);

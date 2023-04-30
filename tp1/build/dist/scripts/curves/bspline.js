@@ -1,6 +1,6 @@
-import {Curve, CurveLevel} from "./curve.js";
+import {Curve, CurveLevel, DEFAULT_DELTA} from "./curve.js";
 export class BSpline extends Curve {
-  constructor(points, level) {
+  constructor(points, level, delta = DEFAULT_DELTA) {
     super(points, level);
     switch (this.level) {
       case CurveLevel.CUADRATIC: {
@@ -14,6 +14,10 @@ export class BSpline extends Curve {
         break;
       }
     }
+    this.segments.forEach((s) => {
+      s.length = s.getLength(delta);
+      this.length += s.length;
+    });
   }
   getSegmentAmount() {
     return this.controlPoints.length - this.level;

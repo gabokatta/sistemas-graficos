@@ -1,6 +1,6 @@
-import {CurveLevel, Curve} from "./curve.js";
+import {CurveLevel, Curve, DEFAULT_DELTA} from "./curve.js";
 export class Bezier extends Curve {
-  constructor(points, level) {
+  constructor(points, level, delta = DEFAULT_DELTA) {
     super(points, level);
     switch (this.level) {
       case CurveLevel.CUADRATIC: {
@@ -14,6 +14,10 @@ export class Bezier extends Curve {
         break;
       }
     }
+    this.segments.forEach((s) => {
+      s.length = s.getLength(delta);
+      this.length += s.length;
+    });
   }
   segmentPoints(segment) {
     return this.level == CurveLevel.CUBIC ? this.controlPoints.slice(segment * 3, segment * 3 + 4) : this.controlPoints.slice(segment * 2, segment * 2 + 3);
