@@ -2,9 +2,6 @@ import {CurveLevel, Curve} from "./curve.js";
 export class Bezier extends Curve {
   constructor(points, level) {
     super(points, level);
-    this.controlPoints = [];
-    this.B = [];
-    this.dB = [];
     switch (this.level) {
       case CurveLevel.CUADRATIC: {
         this.B = cuadraticBases();

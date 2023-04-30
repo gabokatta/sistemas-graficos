@@ -2,9 +2,6 @@ import {Curve, CurveLevel} from "./curve.js";
 export class BSpline extends Curve {
   constructor(points, level) {
     super(points, level);
-    this.controlPoints = [];
-    this.B = [];
-    this.dB = [];
     switch (this.level) {
       case CurveLevel.CUADRATIC: {
         this.B = cuadraticBases();
