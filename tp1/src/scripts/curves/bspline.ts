@@ -1,9 +1,10 @@
 import type { vec3 } from "gl-matrix";
-import { Curve, CurveLevel, DEFAULT_DELTA, Segment } from "./curve";
+import { Curve, CurveLevel } from "./curve";
+import { DEFAULT_DELTA } from "./segment";
 
 export class BSpline extends Curve {
 
-    constructor(points: vec3[], level: CurveLevel, delta = DEFAULT_DELTA) {
+    constructor(points: vec3[], level: CurveLevel, segmentConvexity: Function[] = [] , delta = DEFAULT_DELTA) {
         super(points, level);
         switch (this.level) {
             case CurveLevel.CUADRATIC: {
@@ -21,6 +22,7 @@ export class BSpline extends Curve {
           s.length = s.getLength(delta);
           this.length += s.length;
         })
+        this.setConvexities(segmentConvexity);
     }
 
     getSegmentAmount(): number {

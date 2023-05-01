@@ -1,9 +1,10 @@
 import type { vec3 } from "gl-matrix";
-import { CurveLevel, Curve, Segment, DEFAULT_DELTA } from "./curve";
+import { CurveLevel, Curve } from "./curve";
+import { DEFAULT_DELTA } from "./segment";
 
 export class Bezier extends Curve {
     
-    constructor(points: vec3[], level: CurveLevel, delta = DEFAULT_DELTA) {
+    constructor(points: vec3[], level: CurveLevel, segmentConvexity: Function[] = [] , delta = DEFAULT_DELTA) {
         super(points, level);
         switch (this.level) {
             case CurveLevel.CUADRATIC: {
@@ -21,6 +22,7 @@ export class Bezier extends Curve {
           s.length = s.getLength(delta);
           this.length += s.length;
         })
+        this.setConvexities(segmentConvexity);
     }
 
     segmentPoints(segment: number): vec3[] {

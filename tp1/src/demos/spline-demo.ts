@@ -2,6 +2,7 @@ import { vec3 } from "gl-matrix";
 import { CurveLevel } from "../scripts/curves/curve";
 import { BSpline } from "../scripts/curves/bspline";
 import { Bezier } from "../scripts/curves/bezier";
+import { Convexity } from "../scripts/curves/segment";
 
 var canvas = <HTMLCanvasElement> document.getElementById("my-canvas")!;
 var ctx = canvas.getContext("2d")!;
@@ -31,11 +32,23 @@ points.forEach((p) => {
     return p;
 })
 
+// slight bugs with convexities but it's okay enough.
+
+var curr_seg: number;
 var global_u = 0;
-var curve = new BSpline(points, CurveLevel.CUBIC);
-
-// TODO: BSpline cubic tangent is not working properly.
-
+var convexities = [
+    Convexity.concave,
+    Convexity.concave,
+    Convexity.convex,
+    Convexity.convex,
+    Convexity.convex,
+    Convexity.convex,
+    Convexity.concave,
+    Convexity.concave,
+    Convexity.convex,
+    Convexity.convex
+];
+var curve = new BSpline(points, CurveLevel.CUBIC, convexities);
 
 function drawVector(x1: number, y1: number, x2: number, y2: number, color: string) {
     ctx.beginPath();
@@ -52,6 +65,11 @@ function animate() {
     curve.draw(ctx);
 
     let punto = curve.getPointData(global_u);
+    if (curr_seg != curve.segments.indexOf(curve.coordToSegment(global_u).segment)){
+        console.log(curve.segments.indexOf(curve.coordToSegment(global_u).segment))
+        console.log(punto.point[0], punto.point[1]);
+    }
+    curr_seg = curve.segments.indexOf(curve.coordToSegment(global_u).segment);
 
      // dibujar punto de la curva en verde
      global_u += 0.002;
@@ -61,7 +79,6 @@ function animate() {
      ctx.strokeStyle="#0000FF";
      ctx.stroke();
 
-    console.log(punto.point, punto.normal);
     drawVector(punto.point[0], punto.point[1], punto.tangent[0] * 50, punto.tangent[1] * 50, "#FF0000");
     drawVector(punto.point[0], punto.point[1], punto.normal[0] * 50, punto.normal[1] * 50, "#00FF00");
 
