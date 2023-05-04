@@ -2,10 +2,9 @@ import {vec3} from "../../../snowpack/pkg/gl-matrix.js";
 import {CurveLevel} from "./curve.js";
 export const DEFAULT_DELTA = 0.01;
 export class Segment {
-  constructor(points = [], curve, convexity = Convexity.convex) {
+  constructor(points = [], curve) {
     this.length = 0;
     this.controlPoints = points;
-    this.convexity = convexity;
     this.curve = curve;
   }
   drawOnCanvas(ctx, showQuad, delta = 0.01, width = 2) {
@@ -33,7 +32,7 @@ export class Segment {
     ctx.stroke();
   }
   evaluate(u, delta = DEFAULT_DELTA) {
-    let tangent = vec3.normalize(vec3.create(), this.getTangent(u));
+    let tangent = this.getTangent(u);
     let binormal = vec3.normalize(vec3.create(), this.getBinormal(u, delta, tangent));
     let normal = vec3.normalize(vec3.create(), vec3.cross(vec3.create(), binormal, tangent));
     return {
@@ -53,7 +52,7 @@ export class Segment {
     let current = this.getPoint(u);
     let next = this.getPoint(u + delta);
     let vector = vec3.sub(vec3.create(), current, next);
-    vec3.scale(vector, vector, this.convexity(u));
+    vec3.scale(vector, vector, 1);
     return vec3.cross(vec3.create(), tangent, vector);
   }
   getLength(delta) {
@@ -83,23 +82,3 @@ export class Segment {
     return vec3.fromValues(x, y, z);
   }
 }
-export class Convexity {
-}
-Convexity.convex = (u) => {
-  return 1;
-};
-Convexity.concave = (u) => {
-  return -1;
-};
-Convexity.concaveUntil = (treshold) => (u) => {
-  return u >= treshold ? 1 : -1;
-};
-Convexity.convexUntil = (treshold) => (u) => {
-  return u >= treshold ? -1 : 1;
-};
-Convexity.concaveFrom = (treshold) => (u) => {
-  return u <= treshold ? -1 : 1;
-};
-Convexity.convexFrom = (treshold) => (u) => {
-  return u <= treshold ? 1 : -1;
-};

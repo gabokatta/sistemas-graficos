@@ -1,4 +1,4 @@
-import {Convexity, Segment} from "./segment.js";
+import {Segment} from "./segment.js";
 export class Curve {
   constructor(points, level) {
     this.length = 0;
@@ -26,20 +26,6 @@ export class Curve {
       segments.push(new Segment(points, this));
     }
     return segments;
-  }
-  setConvexities(convexities) {
-    if (convexities.length == 0) {
-      convexities = Array(this.segments.length).fill(Convexity.convex);
-      return;
-    } else if (convexities.length != this.segments.length) {
-      console.log(this.segments, convexities);
-      throw new Error("Convexities should be set for all segments.");
-    }
-    let i = 0;
-    for (let c of convexities) {
-      this.segments[i].convexity = c;
-      i++;
-    }
   }
   coordToSegment(u) {
     let resultSegment = void 0;

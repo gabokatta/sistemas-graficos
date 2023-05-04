@@ -1,6 +1,6 @@
 import {vec3} from "../../snowpack/pkg/gl-matrix.js";
 import {CurveLevel} from "../scripts/curves/curve.js";
-import {BSpline} from "../scripts/curves/bspline.js";
+import {Bezier} from "../scripts/curves/bezier.js";
 var canvas = document.getElementById("my-canvas");
 var ctx = canvas.getContext("2d");
 const points = [
@@ -25,7 +25,7 @@ points.forEach((p) => {
 });
 var curr_seg;
 var global_u = 0;
-var curve = new BSpline(points, CurveLevel.CUBIC);
+var curve = new Bezier(points, CurveLevel.CUBIC);
 function drawVector(x1, y1, x2, y2, color) {
   ctx.beginPath();
   ctx.moveTo(x1, y1);
