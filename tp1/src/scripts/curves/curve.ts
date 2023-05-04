@@ -1,5 +1,5 @@
 import type { vec3 } from "gl-matrix";
-import { Convexity, Segment } from "./segment";
+import {  Segment } from "./segment";
 
 export abstract class Curve  {
 
@@ -18,7 +18,9 @@ export abstract class Curve  {
         this.segments = this.buildSegments();
     }
 
-    //TODO: make normal (convexity) computing configurable per segment.
+    //TODO:
+    //Try to draw straight lines, see if you need any new support.
+    //Make curves webGL compatible.
 
     draw(ctx: CanvasRenderingContext2D):void {
         this.segments.forEach((s) => {
@@ -40,23 +42,6 @@ export abstract class Curve  {
           segments.push(new Segment(points, this)); 
         }
         return segments;
-    }
-
-    setConvexities(convexities: Function[]): void {
-
-        if (convexities.length == 0) {
-            convexities = Array(this.segments.length).fill(Convexity.convex);
-            return
-        } else if (convexities.length != this.segments.length) {
-            console.log(this.segments, convexities);
-            throw new Error("Convexities should be set for all segments.");
-        }
-
-        let i = 0;
-        for (let c of convexities) {
-            this.segments[i].convexity = c;
-            i++;
-        }
     }
 
     coordToSegment(u: number): {segment: Segment, localU: number} {

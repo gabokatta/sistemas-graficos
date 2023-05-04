@@ -1,38 +1,30 @@
 import { vec3 } from "gl-matrix";
 import { CurveLevel } from "../scripts/curves/curve";
 import { BSpline } from "../scripts/curves/bspline";
+import { Bezier } from "../scripts/curves/bezier";
 
 var canvas = <HTMLCanvasElement> document.getElementById("my-canvas")!;
 var ctx = canvas.getContext("2d")!;
-const points = [
-    // Seg 1
-    vec3.fromValues(0, 0, 0),
-    vec3.fromValues(0, 200, 0),
-    vec3.fromValues(200, 200, 0),
-    vec3.fromValues(200, 100, 0),
-    // Seg 2
-    vec3.fromValues(200, 0, 0),
-    vec3.fromValues(400, 0, 0),
-    vec3.fromValues(400, 200, 0),
-    // Seg 3
-    vec3.fromValues(400, 400, 0),
-    vec3.fromValues(300, 300, 0),
-    vec3.fromValues(200, 300, 0),
-    // Seg 4
-    vec3.fromValues(100, 300, 0),
-    vec3.fromValues(0, 200, 0),
-    vec3.fromValues(0, 200, 0),
+const points: vec3[] = [
+    vec3.fromValues(100,100,0),
+    vec3.fromValues(400,100,0),
+    vec3.fromValues(400,400,0),
+    vec3.fromValues(100,400,0),
+    vec3.fromValues(100,100,0),
 ];
 
-points.forEach((p) => {
+points.forEach(p => {
     p[0] += 500;
-    p[1] += 200
-    return p;
+    p[1] += 150
 })
 
-var curr_seg: number;
 var global_u = 0;
-var curve = new BSpline(points, CurveLevel.CUBIC);
+var convexities: Function[] = [
+
+];
+var curve = BSpline.straightLines(points);
+
+console.log(curve.segments)
 
 function drawVector(x1: number, y1: number, x2: number, y2: number, color: string) {
     ctx.beginPath();
@@ -49,12 +41,6 @@ function animate() {
     curve.draw(ctx);
 
     let punto = curve.getPointData(global_u);
-    if (curr_seg != curve.segments.indexOf(curve.coordToSegment(global_u).segment)){
-        console.log(curve.segments.indexOf(curve.coordToSegment(global_u).segment))
-        console.log(punto.point[0], punto.point[1]);
-        console.log("Normal: " , [punto.normal[0], punto.normal[1], punto.normal[2]]);
-    }
-    curr_seg = curve.segments.indexOf(curve.coordToSegment(global_u).segment);
 
      // dibujar punto de la curva en verde
      global_u += 0.002;

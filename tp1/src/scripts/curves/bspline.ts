@@ -4,7 +4,7 @@ import { DEFAULT_DELTA } from "./segment";
 
 export class BSpline extends Curve {
 
-    constructor(points: vec3[], level: CurveLevel, segmentConvexity: Function[] = [] , delta = DEFAULT_DELTA) {
+    constructor(points: vec3[], level: CurveLevel, delta = DEFAULT_DELTA) {
         super(points, level);
         switch (this.level) {
             case CurveLevel.CUADRATIC: {
@@ -22,7 +22,24 @@ export class BSpline extends Curve {
           s.length = s.getLength(delta);
           this.length += s.length;
         })
-        this.setConvexities(segmentConvexity);
+    }
+
+    static straightLines(points: vec3[]): BSpline {
+      let _points = [];
+      for (let p of points) {
+        _points.push(p,p,p);
+      }
+      _points.push(...points.slice(-1));
+
+      let splineStraight =  new BSpline(_points, CurveLevel.CUBIC);
+      // Removing redundant segment.
+      splineStraight.segments.pop();
+
+      // Make segment lengths uniform.
+      splineStraight.segments.forEach((s) => {s.length = 1;})
+      splineStraight.length = splineStraight.segments.length;
+
+      return splineStraight;
     }
 
     getSegmentAmount(): number {

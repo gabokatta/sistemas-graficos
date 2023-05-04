@@ -6,13 +6,11 @@ export const DEFAULT_DELTA: number = 0.01;
 export class Segment {
 
     controlPoints: vec3[];
-    convexity: Function;
     curve: Curve;
     length: number = 0;
 
-    constructor(points: vec3[] = [], curve: Curve, convexity: Function = Convexity.convex) {
+    constructor(points: vec3[] = [], curve: Curve) {
         this.controlPoints = points;
-        this.convexity = convexity;
         this.curve = curve;
     }
 
@@ -44,7 +42,7 @@ export class Segment {
     }
 
     evaluate(u: number, delta: number = DEFAULT_DELTA): {point: vec3, normal: vec3, binormal: vec3, tangent: vec3} {
-        let tangent: vec3 = vec3.normalize(vec3.create(), this.getTangent(u));
+        let tangent: vec3 = this.getTangent(u);
         let binormal = vec3.normalize(vec3.create(), this.getBinormal(u, delta, tangent));
         let normal = vec3.normalize(vec3.create(), vec3.cross(vec3.create(), binormal, tangent));
 
@@ -68,7 +66,7 @@ export class Segment {
         let current = this.getPoint(u);
         let next =  this.getPoint(u + delta);
         let vector = vec3.sub(vec3.create(), current, next);
-        vec3.scale(vector, vector, this.convexity(u));
+        vec3.scale(vector, vector, 1);
         return vec3.cross(vec3.create(), tangent, vector);
     }
 
@@ -101,25 +99,4 @@ export class Segment {
         return vec3.fromValues(x,y,z);
     }
 
-}
-
-export class Convexity {
-    static convex = (u: number) => {
-        return 1;
-    }
-    static concave = (u: number) => {
-        return -1;
-    }
-    static concaveUntil = (treshold: number) => (u: number) => {
-        return u >= treshold ? 1 : -1;
-    }
-    static convexUntil = (treshold: number) => (u: number) => {
-        return u >= treshold ? -1 : 1;
-    }
-    static concaveFrom = (treshold: number) => (u: number) => {
-        return u <= treshold ? -1 : 1;
-    }
-    static convexFrom = (treshold: number) => (u: number) => {
-        return u <= treshold ? 1 : -1;
-    }
 }

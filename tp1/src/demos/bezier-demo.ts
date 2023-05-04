@@ -1,6 +1,6 @@
 import { vec3 } from "gl-matrix";
 import { CurveLevel } from "../scripts/curves/curve";
-import { BSpline } from "../scripts/curves/bspline";
+import { Bezier } from "../scripts/curves/bezier";
 
 var canvas = <HTMLCanvasElement> document.getElementById("my-canvas")!;
 var ctx = canvas.getContext("2d")!;
@@ -32,7 +32,7 @@ points.forEach((p) => {
 
 var curr_seg: number;
 var global_u = 0;
-var curve = new BSpline(points, CurveLevel.CUBIC);
+var curve = new Bezier(points, CurveLevel.CUBIC);
 
 function drawVector(x1: number, y1: number, x2: number, y2: number, color: string) {
     ctx.beginPath();
