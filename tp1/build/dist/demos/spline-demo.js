@@ -26,6 +26,7 @@ points.forEach((p) => {
 var curr_seg;
 var global_u = 0;
 var curve = new BSpline(points, CurveLevel.CUBIC);
+curve.changeBinormalDirection(Array.from(curve.segments.keys()), [0, 0, 1]);
 function drawVector(x1, y1, x2, y2, color) {
   ctx.beginPath();
   ctx.moveTo(x1, y1);

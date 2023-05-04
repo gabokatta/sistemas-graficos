@@ -4,10 +4,11 @@ export const DEFAULT_DELTA = 0.01;
 export class Segment {
   constructor(points = [], curve) {
     this.length = 0;
+    this.binormal = vec3.fromValues(0, 0, -1);
     this.controlPoints = points;
     this.curve = curve;
   }
-  drawOnCanvas(ctx, showQuad, delta = 0.01, width = 2) {
+  drawOnCanvas(ctx, showQuad, delta = DEFAULT_DELTA, width = 2) {
     let p = [this.controlPoints[0], this.controlPoints[1], this.controlPoints[2]];
     if (this.curve.level == CurveLevel.CUBIC) {
       p.push(this.controlPoints[3]);
@@ -31,29 +32,23 @@ export class Segment {
     }
     ctx.stroke();
   }
-  evaluate(u, delta = DEFAULT_DELTA) {
+  evaluate(u) {
     let tangent = this.getTangent(u);
-    let binormal = vec3.normalize(vec3.create(), this.getBinormal(u, delta, tangent));
-    let normal = vec3.normalize(vec3.create(), vec3.cross(vec3.create(), binormal, tangent));
     return {
       point: this.getPoint(u),
       tangent,
-      normal,
-      binormal
+      normal: this.getNormal(tangent),
+      binormal: this.binormal
     };
+  }
+  getNormal(tangent) {
+    return vec3.normalize(vec3.create(), vec3.cross(vec3.create(), this.binormal, tangent));
   }
   getPoint(u) {
     return this.applyBases(u, this.curve.B, this.curve.level);
   }
   getTangent(u) {
     return vec3.normalize(vec3.create(), this.applyBases(u, this.curve.dB, this.curve.level));
-  }
-  getBinormal(u, delta, tangent) {
-    let current = this.getPoint(u);
-    let next = this.getPoint(u + delta);
-    let vector = vec3.sub(vec3.create(), current, next);
-    vec3.scale(vector, vector, 1);
-    return vec3.cross(vec3.create(), tangent, vector);
   }
   getLength(delta) {
     let length = 0;

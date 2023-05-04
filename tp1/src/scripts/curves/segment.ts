@@ -8,13 +8,14 @@ export class Segment {
     controlPoints: vec3[];
     curve: Curve;
     length: number = 0;
+    binormal: vec3 = vec3.fromValues(0,0,-1);
 
     constructor(points: vec3[] = [], curve: Curve) {
         this.controlPoints = points;
         this.curve = curve;
     }
 
-    drawOnCanvas(ctx: CanvasRenderingContext2D, showQuad: boolean, delta: number = 0.01, width: number = 2): void {
+    drawOnCanvas(ctx: CanvasRenderingContext2D, showQuad: boolean, delta: number = DEFAULT_DELTA, width: number = 2): void {
 
         let p = [this.controlPoints[0], this.controlPoints[1], this.controlPoints[2]];
         if (this.curve.level == CurveLevel.CUBIC){
@@ -41,17 +42,18 @@ export class Segment {
         ctx.stroke();
     }
 
-    evaluate(u: number, delta: number = DEFAULT_DELTA): {point: vec3, normal: vec3, binormal: vec3, tangent: vec3} {
-        let tangent: vec3 = this.getTangent(u);
-        let binormal = vec3.normalize(vec3.create(), this.getBinormal(u, delta, tangent));
-        let normal = vec3.normalize(vec3.create(), vec3.cross(vec3.create(), binormal, tangent));
-
+    evaluate(u: number): {point: vec3, normal: vec3, binormal: vec3, tangent: vec3} {
+        let tangent = this.getTangent(u);
         return {
             point: this.getPoint(u),
             tangent: tangent,
-            normal: normal,
-            binormal: binormal
+            normal: this.getNormal(tangent),
+            binormal: this.binormal
         }
+    }
+
+    getNormal(tangent: vec3) {
+        return vec3.normalize(vec3.create(), vec3.cross(vec3.create(), this.binormal, tangent));
     }
 
     getPoint(u: number) {
@@ -61,15 +63,7 @@ export class Segment {
     getTangent(u: number) {
         return vec3.normalize(vec3.create(), this.applyBases(u, this.curve.dB, this.curve.level));
     }
-
-    getBinormal(u: number, delta: number, tangent: vec3) {
-        let current = this.getPoint(u);
-        let next =  this.getPoint(u + delta);
-        let vector = vec3.sub(vec3.create(), current, next);
-        vec3.scale(vector, vector, 1);
-        return vec3.cross(vec3.create(), tangent, vector);
-    }
-
+    
     getLength(delta:number): number {
         let length = 0;
         for (let u = 0; u < 1 - delta; u += delta){

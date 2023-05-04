@@ -50,6 +50,11 @@ export class Curve {
       throw new Error("Invalid amount of control points.");
     }
   }
+  changeBinormalDirection(segmentIndexes, binormal) {
+    for (let index of segmentIndexes) {
+      this.segments[index].binormal = binormal;
+    }
+  }
 }
 export var CurveLevel;
 (function(CurveLevel2) {

@@ -13,10 +13,11 @@ points.forEach((p) => {
   p[0] += 500;
   p[1] += 150;
 });
+var curr_seg;
 var global_u = 0;
 var convexities = [];
 var curve = BSpline.straightLines(points);
-console.log(curve.segments);
+curve.changeBinormalDirection(Array.from(curve.segments.keys()), [0, 0, 1]);
 function drawVector(x1, y1, x2, y2, color) {
   ctx.beginPath();
   ctx.moveTo(x1, y1);
@@ -29,7 +30,12 @@ function animate() {
   ctx.clearRect(0, 0, 1e3, 1e3);
   curve.draw(ctx);
   let punto = curve.getPointData(global_u);
-  global_u += 2e-3;
+  if (curr_seg != curve.segments.indexOf(curve.coordToSegment(global_u).segment)) {
+    console.log(curve.segments.indexOf(curve.coordToSegment(global_u).segment));
+    console.log("Binormal: ", [punto.binormal[0], punto.binormal[1], punto.binormal[2]]);
+  }
+  curr_seg = curve.segments.indexOf(curve.coordToSegment(global_u).segment);
+  global_u += 15e-4;
   ctx.lineWidth = 5;
   ctx.beginPath();
   ctx.arc(punto.point[0], punto.point[1], 10, 0, 2 * Math.PI);

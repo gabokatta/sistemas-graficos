@@ -71,6 +71,12 @@ export abstract class Curve  {
         }
     }
 
+    changeBinormalDirection(segmentIndexes: number[], binormal: vec3) {
+        for (let index of segmentIndexes){
+            this.segments[index].binormal = binormal;
+        }
+    }
+
     abstract getSegmentAmount(): number;
     abstract segmentPoints(segment: number): vec3[]
 
