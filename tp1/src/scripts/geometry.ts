@@ -1,7 +1,7 @@
 import type { vec3 } from "gl-matrix";
 import type { WebGL } from "./webgl";
 
-export interface Geometry {
+export interface Geometry{
 
     index: number[];
     position: number[];
@@ -10,8 +10,7 @@ export interface Geometry {
     rows: number;
     cols: number;
 
-    getNormals(alfa: number, beta: number) : vec3;
-    getPosition(alfa: number, beta: number) : vec3;
+    getPointData(alfa: number, beta: number): any;
     draw(gl: WebGL): void;
 }
 
@@ -35,11 +34,9 @@ export function buildBuffers(geometry: Geometry): void  {
     
             var alfa=i/rows;
             var beta=j/cols;
-    
-            var p = geometry.getPosition(alfa,beta);  
-            geometry.position.push(...p);
 
-            var n = geometry.getNormals(alfa,beta);
+            var {p, n} = geometry.getPointData(alfa, beta) 
+            geometry.position.push(...p);
             geometry.normal.push(...n);
         }
     }

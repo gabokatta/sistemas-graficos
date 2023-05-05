@@ -61,11 +61,11 @@ var sonTransforms3: Transformation[] = [
     Transformation.translate([0, 0, 4.5])
 ]
 
-var sonSphere3 = new Object3D(new Sphere(60,60, 0.5), sonTransforms3, []);
-var sonSphere2 = new Object3D(new Sphere(60,60, 2), sonTransforms2, []);
-var sonSphere = new Object3D(new Sphere(60,60, 2), sonTransforms, []);
+var sonSphere3 = new Object3D(new Sphere( 0.5), sonTransforms3, []);
+var sonSphere2 = new Object3D(new Sphere( 2), sonTransforms2, []);
+var sonSphere = new Object3D(new Sphere( 2), sonTransforms, []);
 
-var sphere = new Object3D(new Sphere(60,60, 4), [
+var sphere = new Object3D(new Sphere( 4), [
     Transformation.rotation(to_rads(90), [0,-1,0]),
     Transformation.scale([0.4,0.4,0.4]), 
     Transformation.translate([0,-1,0])

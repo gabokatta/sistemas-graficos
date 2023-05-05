@@ -54,8 +54,8 @@ var sonTransforms = [
     Transformation.translate([-4, 0,0])
 ]
 
-var cylinderSon = new Object3D(new Cylinder(60,60, 1, 3), sonTransforms, []);
-var cylinderSon2 = new Object3D(new Cylinder(60,60, 1, 3), son2Transforms, []);
-var cylinder = new Object3D(new Cylinder(60,60, 1, 3), [], []);
+var cylinderSon = new Object3D(new Cylinder(1, 3), sonTransforms, []);
+var cylinderSon2 = new Object3D(new Cylinder(1, 3), son2Transforms, []);
+var cylinder = new Object3D(new Cylinder(1, 3), [], []);
 cylinder.setChildren([cylinderSon, cylinderSon2]);
 tick();

@@ -1,15 +1,20 @@
 import {vec3} from "../../../snowpack/pkg/gl-matrix.js";
 import {buildBuffers, buildIndex} from "../geometry.js";
 export class Sphere {
-  constructor(rows, cols, radius) {
+  constructor(radius) {
+    this.rows = 75;
+    this.cols = 75;
     this.index = [];
     this.position = [];
     this.normal = [];
-    this.rows = rows;
-    this.cols = cols;
     this.radius = radius;
     buildBuffers(this);
     buildIndex(this);
+  }
+  getPointData(alfa, beta) {
+    let point = this.getPosition(alfa, beta);
+    let normal = this.getNormals(alfa, beta);
+    return {p: point, n: normal};
   }
   getNormals(alfa, beta) {
     var p = this.getPosition(alfa, beta);

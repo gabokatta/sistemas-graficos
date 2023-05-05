@@ -48,8 +48,8 @@ var sonTransforms = [
 var son2Transforms = [
   Transformation.scale([0.3, 0.3, 0.3])
 ];
-var tube3 = new Object3D(new SinTube(60, 60, 2, 0.4, 0.1, 15), son2Transforms, []);
-var tube2 = new Object3D(new SinTube(60, 60, 2, 0.4, 0.1, 15), sonTransforms, []);
-var tube = new Object3D(new SinTube(60, 60, 2, 0.4, 0.1, 15), baseTransforms, []);
+var tube3 = new Object3D(new SinTube(2, 0.4, 0.1, 15), son2Transforms, []);
+var tube2 = new Object3D(new SinTube(2, 0.4, 0.1, 15), sonTransforms, []);
+var tube = new Object3D(new SinTube(2, 0.4, 0.1, 15), baseTransforms, []);
 tube.setChildren([tube2, tube3]);
 tick();

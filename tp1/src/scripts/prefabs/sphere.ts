@@ -4,22 +4,26 @@ import { buildBuffers, buildIndex, Geometry } from "../geometry";
 
 export class Sphere implements Geometry {
 
-    rows: number;
-    cols: number;
+    rows: number = 75;
+    cols: number = 75;
+
     radius: number;
 
     index: number[] = [];
     position: number[] = [];
     normal: number[] = [];
   
-    constructor(rows: number, cols: number, radius: number) {
-      this.rows = rows;
-      this.cols = cols;
+    constructor(radius: number) {
       this.radius = radius;
-
       buildBuffers(this);
       buildIndex(this);
     }
+
+    getPointData(alfa: number, beta: number) {
+      let point = this.getPosition(alfa, beta);
+      let normal = this.getNormals(alfa, beta);
+      return {p: point, n: normal}
+  }
   
     getNormals(alfa: number, beta: number): vec3 {
       var p = this.getPosition(alfa,beta);

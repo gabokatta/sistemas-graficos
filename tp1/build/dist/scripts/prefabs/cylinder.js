@@ -2,18 +2,23 @@ import {vec3} from "../../../snowpack/pkg/gl-matrix.js";
 import {buildBuffers, buildIndex} from "../geometry.js";
 import {DrawMethod} from "../webgl.js";
 export class Cylinder {
-  constructor(rows, cols, radius, height) {
+  constructor(radius, height) {
     this.index = [];
     this.position = [];
     this.normal = [];
     this.covers = [];
-    this.rows = rows;
-    this.cols = cols;
+    this.rows = 75;
+    this.cols = 75;
     this.radius = radius;
     this.height = height;
     buildBuffers(this);
     buildIndex(this);
     this.buildCovers();
+  }
+  getPointData(alfa, beta) {
+    let point = this.getPosition(alfa, beta);
+    let normal = this.getNormals(alfa, beta);
+    return {p: point, n: normal};
   }
   buildCovers() {
     this.covers.push(fillTop(this), fillBottom(this));

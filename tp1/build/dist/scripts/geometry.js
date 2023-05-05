@@ -15,9 +15,8 @@ export function buildBuffers(geometry) {
     for (var j = 0; j <= cols; j++) {
       var alfa = i / rows;
       var beta = j / cols;
-      var p = geometry.getPosition(alfa, beta);
+      var {p, n} = geometry.getPointData(alfa, beta);
       geometry.position.push(...p);
-      var n = geometry.getNormals(alfa, beta);
       geometry.normal.push(...n);
     }
   }

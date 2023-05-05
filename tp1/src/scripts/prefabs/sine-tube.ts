@@ -9,24 +9,27 @@ export class SinTube implements Geometry {
     longitude: number;
     height: number;
 
-    rows: number;
-    cols: number;
+    rows: number = 75;
+    cols: number = 75;
   
     index: number[] = [];
     position: number[] = [];
     normal: number[] = [];
   
-    constructor(rows: number, cols: number, radio: number, amplitude: number, longitude: number, height: number) {
-      this.rows = rows;
-      this.cols = cols;
+    constructor(radio: number, amplitude: number, longitude: number, height: number) {
       this.amplitude = amplitude;
       this.longitude = longitude;
       this.height = height;
       this.radio = radio;
-
       buildBuffers(this);
       buildIndex(this);
     }
+
+    getPointData(alfa: number, beta: number) {
+      let point = this.getPosition(alfa, beta);
+      let normal = this.getNormals(alfa, beta);
+      return {p: point, n: normal}
+  }
   
     getNormals(alfa: number, beta: number): vec3 {
       var p = this.getPosition(alfa,beta);

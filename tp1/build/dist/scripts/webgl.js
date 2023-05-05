@@ -62,7 +62,7 @@ export class WebGL {
     this.setAttribute(vertexBuffer, 3, "aVertexPosition");
     this.setAttribute(normalBuffer, 3, "aVertexNormal");
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    this.gl.drawElements(this.method, index.length, this.gl.UNSIGNED_SHORT, 0);
+    this.gl.drawElements(method, index.length, this.gl.UNSIGNED_SHORT, 0);
   }
   setDrawMethod(method) {
     this.method = method;
@@ -128,6 +128,7 @@ function handleResponse(response) {
 export var DrawMethod;
 (function(DrawMethod2) {
   DrawMethod2[DrawMethod2["Smooth"] = WebGLRenderingContext.TRIANGLE_STRIP] = "Smooth";
-  DrawMethod2[DrawMethod2["Lines"] = WebGLRenderingContext.LINE_STRIP] = "Lines";
+  DrawMethod2[DrawMethod2["LineStrip"] = WebGLRenderingContext.LINE_STRIP] = "LineStrip";
   DrawMethod2[DrawMethod2["Fan"] = WebGLRenderingContext.TRIANGLE_FAN] = "Fan";
+  DrawMethod2[DrawMethod2["Lines"] = WebGLRenderingContext.LINES] = "Lines";
 })(DrawMethod || (DrawMethod = {}));

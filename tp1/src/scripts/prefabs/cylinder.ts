@@ -1,5 +1,5 @@
 import { vec3 } from "gl-matrix";
-import { buildBuffers, buildIndex, Geometry } from "../geometry";
+import { buildBuffers, buildIndex,  Geometry } from "../geometry";
 import { DrawMethod, WebGL } from "../webgl";
 
 export class Cylinder implements Geometry {
@@ -14,21 +14,27 @@ export class Cylinder implements Geometry {
         normal: number[]
     }[] = [];
 
-    rows: number;
-    cols: number;
+    rows: number = 75;
+    cols: number = 75;
+
     height: number;
     radius: number;
 
-    constructor(rows: number, cols: number, radius: number, height: number) {
-        this.rows = rows;
-        this.cols = cols;
+    constructor(radius: number, height: number) {
         this.radius = radius;
         this.height = height;
-
         buildBuffers(this);
         buildIndex(this);
         this.buildCovers();
-    };
+    }
+    
+    
+    getPointData(alfa: number, beta: number) {
+        let point = this.getPosition(alfa, beta);
+        let normal = this.getNormals(alfa, beta);
+        return {p: point, n: normal}
+    }
+;
 
     buildCovers() {
         this.covers.push(fillTop(this), fillBottom(this));

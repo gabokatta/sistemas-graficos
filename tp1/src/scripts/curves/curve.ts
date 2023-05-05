@@ -1,5 +1,5 @@
 import type { vec3 } from "gl-matrix";
-import {  Segment } from "./segment";
+import { Segment } from "./segment";
 
 export abstract class Curve  {
 
@@ -17,10 +17,6 @@ export abstract class Curve  {
         this.level = level;
         this.segments = this.buildSegments();
     }
-
-    //TODO:
-    //Try to draw straight lines, see if you need any new support.
-    //Make curves webGL compatible.
 
     draw(ctx: CanvasRenderingContext2D):void {
         this.segments.forEach((s) => {
@@ -55,7 +51,7 @@ export abstract class Curve  {
             u -= globalLength;
         }
         if (resultSegment == undefined) {
-            return {segment: this.segments[-1], localU: 1};
+            return {segment: this.segments.slice(-1)[0], localU: 1};
         }
         const localU = u / (resultSegment.length / this.length);
         return {segment: resultSegment, localU: localU};

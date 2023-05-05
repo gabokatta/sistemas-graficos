@@ -38,7 +38,7 @@ export class Curve {
       u -= globalLength;
     }
     if (resultSegment == void 0) {
-      return {segment: this.segments[-1], localU: 1};
+      return {segment: this.segments.slice(-1)[0], localU: 1};
     }
     const localU = u / (resultSegment.length / this.length);
     return {segment: resultSegment, localU};
