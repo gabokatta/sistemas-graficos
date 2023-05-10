@@ -40,18 +40,18 @@ function animate() {
   let punto = curve.getPointData(global_u);
   if (curr_seg != curve.segments.indexOf(curve.coordToSegment(global_u).segment)) {
     console.log(curve.segments.indexOf(curve.coordToSegment(global_u).segment));
-    console.log(punto.point[0], punto.point[1]);
-    console.log("Normal: ", [punto.normal[0], punto.normal[1], punto.normal[2]]);
+    console.log(punto.p[0], punto.p[1]);
+    console.log("Normal: ", [punto.n[0], punto.n[1], punto.n[2]]);
   }
   curr_seg = curve.segments.indexOf(curve.coordToSegment(global_u).segment);
   global_u += 2e-3;
   ctx.lineWidth = 5;
   ctx.beginPath();
-  ctx.arc(punto.point[0], punto.point[1], 10, 0, 2 * Math.PI);
+  ctx.arc(punto.p[0], punto.p[1], 10, 0, 2 * Math.PI);
   ctx.strokeStyle = "#0000FF";
   ctx.stroke();
-  drawVector(punto.point[0], punto.point[1], punto.tangent[0] * 50, punto.tangent[1] * 50, "#FF0000");
-  drawVector(punto.point[0], punto.point[1], punto.normal[0] * 50, punto.normal[1] * 50, "#00FF00");
+  drawVector(punto.p[0], punto.p[1], punto.t[0] * 50, punto.t[1] * 50, "#FF0000");
+  drawVector(punto.p[0], punto.p[1], punto.n[0] * 50, punto.n[1] * 50, "#00FF00");
   if (global_u > 1)
     global_u = 0;
 }

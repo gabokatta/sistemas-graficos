@@ -1,6 +1,7 @@
-import {mat4, vec3} from "../../../snowpack/pkg/gl-matrix.js";
+import {mat4} from "../../../snowpack/pkg/gl-matrix.js";
 import {DEFAULT_DELTA, Segment} from "./segment.js";
 import {DrawMethod} from "../webgl.js";
+import {applyTransform} from "../util.js";
 export class Curve {
   constructor(points, level) {
     this.length = 0;
@@ -38,7 +39,7 @@ export class Curve {
   }
   getPointData(u) {
     const {segment, localU} = this.coordToSegment(u);
-    return this.applyTransform(segment.evaluate(localU));
+    return applyTransform(this.transform, segment.evaluate(localU));
   }
   buildSegments() {
     this.validateControlPoints();
@@ -77,14 +78,6 @@ export class Curve {
     for (let index of segmentIndexes) {
       this.segments[index].binormal = binormal;
     }
-  }
-  applyTransform(data) {
-    return {
-      p: vec3.transformMat4(vec3.create(), data.p, this.transform),
-      t: vec3.transformMat4(vec3.create(), data.t, this.transform),
-      n: vec3.transformMat4(vec3.create(), data.n, this.transform),
-      b: vec3.transformMat4(vec3.create(), data.b, this.transform)
-    };
   }
 }
 export var CurveLevel;

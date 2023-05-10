@@ -1,6 +1,7 @@
 import { mat4, vec3 } from "gl-matrix";
 import { DEFAULT_DELTA, Segment } from "./segment";
 import { DrawMethod, WebGL } from "../webgl";
+import { applyTransform } from "../util";
 
 export abstract class Curve  {
 
@@ -52,7 +53,7 @@ export abstract class Curve  {
 
     getPointData(u: number): any {
         const {segment, localU} = this.coordToSegment(u);
-        return this.applyTransform(segment.evaluate(localU));
+        return applyTransform(this.transform, segment.evaluate(localU));
     }
 
     buildSegments(): Segment[] {
@@ -97,15 +98,6 @@ export abstract class Curve  {
         for (let index of segmentIndexes){
             this.segments[index].binormal = binormal;
         }
-    }
-
-    applyTransform(data: any): {p: vec3, n: vec3, b: vec3, t: vec3} {
-        return {
-            p: vec3.transformMat4(vec3.create(), data.p, this.transform),
-            t: vec3.transformMat4(vec3.create(), data.t, this.transform),
-            n: vec3.transformMat4(vec3.create(), data.n, this.transform),
-            b: vec3.transformMat4(vec3.create(), data.b, this.transform),
-          };
     }
 
     abstract getSegmentAmount(): number;

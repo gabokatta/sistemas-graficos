@@ -2,6 +2,7 @@ import {buildBuffers, buildIndex} from "./geometry.js";
 import {DrawMethod} from "./webgl.js";
 import {mat4, vec3} from "../../snowpack/pkg/gl-matrix.js";
 import {DEFAULT_DELTA} from "./curves/segment.js";
+import {applyTransform} from "./util.js";
 export class SweepSurface {
   constructor(shape, path) {
     this.index = [];
@@ -63,7 +64,7 @@ export class Surface {
     let {p, t, n} = this.orientation;
     let b = [...vec3.cross(vec3.create(), t, n).values()];
     this.orientation.b = b;
-    return {p, t, n, b};
+    return applyTransform(this.transform, {p, t, n, b});
   }
   shapePoint(u) {
     let {p, n, t, b} = this.shape.getPointData(u);

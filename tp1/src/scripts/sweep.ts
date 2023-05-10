@@ -3,6 +3,7 @@ import { DrawMethod, WebGL } from "./webgl";
 import type { Curve } from "./curves/curve";
 import { mat4, vec3 } from "gl-matrix";
 import { DEFAULT_DELTA } from "./curves/segment";
+import { applyTransform } from "./util";
 
 export class SweepSurface implements Geometry {
 
@@ -87,7 +88,7 @@ export class Surface {
         let {p, t, n} =  this.orientation;
         let b = [...vec3.cross(vec3.create(), t, n).values()];
         this.orientation.b = b;
-        return {p, t, n, b};
+        return applyTransform(this.transform, {p , t, n, b});
     }
 
     shapePoint(u: number) {
