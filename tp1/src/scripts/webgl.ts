@@ -93,6 +93,19 @@ export class WebGL {
         this.gl.drawElements(method, index.length, this.gl.UNSIGNED_SHORT, 0);
     }
 
+    drawVec(p: number[], dir: number[], len: number , normals: number[] = [0,0,0,0,0,0]) {
+        let dirNorm = vec3.normalize(vec3.create(), vec3.fromValues(dir[0],dir[1],dir[2]));
+        vec3.scale(dirNorm, dirNorm, len)
+        let p2 = vec3.add(vec3.create(), 
+        vec3.fromValues(p[0],p[1],p[2]), 
+        vec3.fromValues(dirNorm[0],dirNorm[1],dirNorm[2]));
+        this.drawLine(vec3.fromValues(p[0],p[1],p[2]), p2, normals);
+    }
+
+    drawLine(p1: vec3, p2: vec3, normals: number[] = [0,0,0,0,0,0]) {
+        this.draw([...p1, ...p2], normals, [0,1], DrawMethod.Lines)
+    }
+
     // Utility Methods
 
     setDrawMethod(method: DrawMethod) {

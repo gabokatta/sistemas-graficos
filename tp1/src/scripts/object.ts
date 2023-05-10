@@ -1,15 +1,14 @@
 import { mat4, vec3 } from "gl-matrix";
-import type { Drawable } from "./geometry";
 import type { WebGL } from "./webgl";
 
 export class Object3D {
     transform: mat4;
     transformations: Transformation[] = [];
     children: Object3D[];
-    geometry: Drawable;
+    geometry: any;
     color: number[];
   
-    constructor(geometry: Drawable, transformations: Transformation[], color = [0, 0, 0]) {
+    constructor(geometry: any, transformations: Transformation[], color = [0, 0, 0]) {
       this.transform = mat4.create();
       this.transformations = transformations.reverse();
 

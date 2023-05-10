@@ -42,13 +42,13 @@ export class Segment {
         ctx.stroke();
     }
 
-    evaluate(u: number): {point: vec3, normal: vec3, binormal: vec3, tangent: vec3} {
+    evaluate(u: number): {p: vec3, n: vec3, b: vec3, t: vec3} {
         let tangent = this.getTangent(u);
         return {
-            point: this.getPoint(u),
-            tangent: tangent,
-            normal: this.getNormal(tangent),
-            binormal: this.binormal
+            p: this.getPoint(u),
+            t: tangent,
+            n: this.getNormal(tangent),
+            b: this.binormal
         }
     }
 

@@ -1,4 +1,4 @@
-import {mat4} from "../../snowpack/pkg/gl-matrix.js";
+import {mat4, vec3} from "../../snowpack/pkg/gl-matrix.js";
 const vertexShaderPath = "dist/shaders/vertex.glsl";
 const fragmentShaderPath = "dist/shaders/fragment.glsl";
 export class WebGL {
@@ -63,6 +63,15 @@ export class WebGL {
     this.setAttribute(normalBuffer, 3, "aVertexNormal");
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
     this.gl.drawElements(method, index.length, this.gl.UNSIGNED_SHORT, 0);
+  }
+  drawVec(p, dir, len, normals = [0, 0, 0, 0, 0, 0]) {
+    let dirNorm = vec3.normalize(vec3.create(), vec3.fromValues(dir[0], dir[1], dir[2]));
+    vec3.scale(dirNorm, dirNorm, len);
+    let p2 = vec3.add(vec3.create(), vec3.fromValues(p[0], p[1], p[2]), vec3.fromValues(dirNorm[0], dirNorm[1], dirNorm[2]));
+    this.drawLine(vec3.fromValues(p[0], p[1], p[2]), p2, normals);
+  }
+  drawLine(p1, p2, normals = [0, 0, 0, 0, 0, 0]) {
+    this.draw([...p1, ...p2], normals, [0, 1], DrawMethod.Lines);
   }
   setDrawMethod(method) {
     this.method = method;

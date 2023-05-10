@@ -35,10 +35,10 @@ export class Segment {
   evaluate(u) {
     let tangent = this.getTangent(u);
     return {
-      point: this.getPoint(u),
-      tangent,
-      normal: this.getNormal(tangent),
-      binormal: this.binormal
+      p: this.getPoint(u),
+      t: tangent,
+      n: this.getNormal(tangent),
+      b: this.binormal
     };
   }
   getNormal(tangent) {
