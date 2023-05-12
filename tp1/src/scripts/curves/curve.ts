@@ -1,7 +1,6 @@
 import { mat4, vec3 } from "gl-matrix";
 import { DEFAULT_DELTA, Segment } from "./segment";
 import { DrawMethod, WebGL } from "../webgl";
-import { applyTransform } from "../util";
 
 export abstract class Curve  {
 
@@ -31,17 +30,25 @@ export abstract class Curve  {
     glDraw(gl: WebGL, delta: number = DEFAULT_DELTA): void {
         let {p, n} = this.discretize(delta);
         const idx = [...Array(p.length/3).keys()];
-        gl.draw(p, idx, n, DrawMethod.LineStrip);
+        let points: number[] = [];
+        for (let point of p) {
+            points.push(...point);
+        }
+        let normals: number[] = [];
+        for (let normal of n) {
+            normals.push(...normal);   
+        }
+        gl.draw(points, idx, normals, DrawMethod.LineStrip);
     }
 
-    discretize(delta = DEFAULT_DELTA): {p: number[], n: number[], b: number[], t: number[]}  {
-        let discretized: {p: number[], n: number[], b: number[], t: number[]} = {p: [], n: [], b: [], t: []}
+    discretize(delta = DEFAULT_DELTA): {p: vec3[], n: vec3[], b: vec3[], t: vec3[]}  {
+        let discretized: {p: vec3[], n: vec3[], b: vec3[], t: vec3[]} = {p: [], n: [], b: [], t: []}
         for (let u = 0; u <= 1.001; u += delta) {
             let data = this.getPointData(u);
-            discretized.p.push(...data.p);
-            discretized.n.push(...data.n);
-            discretized.b.push(...data.b);
-            discretized.t.push(...data.t);
+            discretized.p.push(data.p);
+            discretized.n.push(data.n);
+            discretized.b.push(data.b);
+            discretized.t.push(data.t);
         }
         return discretized;
     }
@@ -53,7 +60,7 @@ export abstract class Curve  {
 
     getPointData(u: number): any {
         const {segment, localU} = this.coordToSegment(u);
-        return applyTransform(this.transform, segment.evaluate(localU));
+        return segment.evaluate(localU)
     }
 
     buildSegments(): Segment[] {

@@ -1,7 +1,6 @@
 import {mat4} from "../../../snowpack/pkg/gl-matrix.js";
 import {DEFAULT_DELTA, Segment} from "./segment.js";
 import {DrawMethod} from "../webgl.js";
-import {applyTransform} from "../util.js";
 export class Curve {
   constructor(points, level) {
     this.length = 0;
@@ -20,16 +19,24 @@ export class Curve {
   glDraw(gl, delta = DEFAULT_DELTA) {
     let {p, n} = this.discretize(delta);
     const idx = [...Array(p.length / 3).keys()];
-    gl.draw(p, idx, n, DrawMethod.LineStrip);
+    let points = [];
+    for (let point of p) {
+      points.push(...point);
+    }
+    let normals = [];
+    for (let normal of n) {
+      normals.push(...normal);
+    }
+    gl.draw(points, idx, normals, DrawMethod.LineStrip);
   }
   discretize(delta = DEFAULT_DELTA) {
     let discretized = {p: [], n: [], b: [], t: []};
     for (let u = 0; u <= 1.001; u += delta) {
       let data = this.getPointData(u);
-      discretized.p.push(...data.p);
-      discretized.n.push(...data.n);
-      discretized.b.push(...data.b);
-      discretized.t.push(...data.t);
+      discretized.p.push(data.p);
+      discretized.n.push(data.n);
+      discretized.b.push(data.b);
+      discretized.t.push(data.t);
     }
     return discretized;
   }
@@ -39,7 +46,7 @@ export class Curve {
   }
   getPointData(u) {
     const {segment, localU} = this.coordToSegment(u);
-    return applyTransform(this.transform, segment.evaluate(localU));
+    return segment.evaluate(localU);
   }
   buildSegments() {
     this.validateControlPoints();
