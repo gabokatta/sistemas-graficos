@@ -17,7 +17,7 @@ export class Curve {
       s.drawOnCanvas(ctx, true);
     });
   }
-  glDraw(gl, delta = DEFAULT_DELTA, controlPoints = false) {
+  glDraw(gl, delta = DEFAULT_DELTA) {
     let {p, n} = this.discretize(delta);
     const idx = [...Array(p.length / 3).keys()];
     gl.draw(p, idx, n, DrawMethod.LineStrip);

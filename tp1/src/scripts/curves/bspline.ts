@@ -1,9 +1,8 @@
 import type { vec3 } from "gl-matrix";
 import { Curve, CurveLevel } from "./curve";
 import { DEFAULT_DELTA } from "./segment";
-import type { Path } from "../sweep";
 
-export class BSpline extends Curve implements Path {
+export class BSpline extends Curve {
 
     constructor(points: vec3[], level: CurveLevel, delta = DEFAULT_DELTA) {
         super(points, level);

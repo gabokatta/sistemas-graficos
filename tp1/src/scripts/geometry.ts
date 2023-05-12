@@ -14,7 +14,7 @@ export interface Geometry{
     draw(gl: WebGL): void;
 }
 
-export function buildIndex(geometry: Geometry): void{   
+export function buildIndex(geometry: Geometry): void {   
     var indexBuffer = [];
     const indexCalc = (i: number, j: number) => j + (geometry.cols + 1) * i;
     for (let i = 0; i < geometry.rows; i++){ 

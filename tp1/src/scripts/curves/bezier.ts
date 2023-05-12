@@ -1,9 +1,7 @@
 import type { vec3 } from "gl-matrix";
 import { CurveLevel, Curve } from "./curve";
 import { DEFAULT_DELTA } from "./segment";
-import type { Path } from "../sweep";
-
-export class Bezier extends Curve implements Path {
+export class Bezier extends Curve  {
     
     constructor(points: vec3[], level: CurveLevel, delta = DEFAULT_DELTA) {
         super(points, level);

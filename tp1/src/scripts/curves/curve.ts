@@ -28,7 +28,7 @@ export abstract class Curve  {
         });
     }
 
-    glDraw(gl: WebGL, delta: number = DEFAULT_DELTA, controlPoints: boolean = false): void {
+    glDraw(gl: WebGL, delta: number = DEFAULT_DELTA): void {
         let {p, n} = this.discretize(delta);
         const idx = [...Array(p.length/3).keys()];
         gl.draw(p, idx, n, DrawMethod.LineStrip);
