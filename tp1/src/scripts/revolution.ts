@@ -34,4 +34,5 @@ export class Revolution implements Path {
             gl.drawVec(p, n, 0.4);
           }
         }
+      
 }
