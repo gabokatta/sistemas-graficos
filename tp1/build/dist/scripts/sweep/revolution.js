@@ -4,6 +4,9 @@ export class Revolution {
     this.shape = shape;
     this.angle = angle;
   }
+  getPath() {
+    throw new Error("Method not implemented.");
+  }
   getShape() {
     return this.shape;
   }

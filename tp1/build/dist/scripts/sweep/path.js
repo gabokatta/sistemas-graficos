@@ -3,6 +3,9 @@ export class Path {
     this.shape = shape;
     this.path = path;
   }
+  getPath() {
+    return this.path;
+  }
   getShape() {
     return this.shape;
   }

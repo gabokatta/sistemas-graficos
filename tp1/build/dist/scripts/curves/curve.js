@@ -1,4 +1,3 @@
-import {mat4} from "../../../snowpack/pkg/gl-matrix.js";
 import {DEFAULT_DELTA, Segment} from "./segment.js";
 import {DrawMethod} from "../webgl.js";
 export class Curve {
@@ -6,7 +5,6 @@ export class Curve {
     this.length = 0;
     this.B = [];
     this.dB = [];
-    this.transform = mat4.create();
     this.controlPoints = points;
     this.level = level;
     this.segments = this.buildSegments();
@@ -18,7 +16,7 @@ export class Curve {
   }
   glDraw(gl, delta = DEFAULT_DELTA) {
     let {p, n} = this.discretize(delta);
-    const idx = [...Array(p.length / 3).keys()];
+    const idx = [...Array(p.length).keys()];
     let points = [];
     for (let point of p) {
       points.push(...point);
@@ -39,10 +37,6 @@ export class Curve {
       discretized.t.push(data.t);
     }
     return discretized;
-  }
-  setTransform(transform) {
-    this.transform = transform;
-    return this;
   }
   getPointData(u) {
     const {segment, localU} = this.coordToSegment(u);

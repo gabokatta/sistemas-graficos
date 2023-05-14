@@ -71,7 +71,7 @@ export class WebGL {
     this.drawLine(vec3.fromValues(p[0], p[1], p[2]), p2, normals);
   }
   drawLine(p1, p2, normals = [0, 0, 0, 0, 0, 0]) {
-    this.draw([...p1, ...p2], normals, [0, 1], DrawMethod.Lines);
+    this.draw([...p1, ...p2], [0, 1], normals, DrawMethod.Lines);
   }
   setDrawMethod(method) {
     this.method = method;

@@ -103,7 +103,7 @@ export class WebGL {
     }
 
     drawLine(p1: vec3, p2: vec3, normals: number[] = [0,0,0,0,0,0]) {
-        this.draw([...p1, ...p2], normals, [0,1], DrawMethod.Lines)
+        this.draw([...p1, ...p2], [0,1], normals, DrawMethod.Lines)
     }
 
     // Utility Methods

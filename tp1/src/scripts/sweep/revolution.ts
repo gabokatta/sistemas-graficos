@@ -11,6 +11,10 @@ export class Revolution implements Sweepable {
         this.shape = shape;
         this.angle = angle;
     }
+    
+    getPath(): Curve {
+        throw new Error("Method not implemented.");
+    }
 
     getShape(): Curve {
         return this.shape;

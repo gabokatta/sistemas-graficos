@@ -2,7 +2,6 @@
 import { BSpline } from "../curves/bspline";
 import { SweepSurface } from "../sweep/sweep";
 import { Path } from "../sweep/path";
-import { Revolution } from "../sweep/revolution";
 
 export class Cube extends SweepSurface {
 

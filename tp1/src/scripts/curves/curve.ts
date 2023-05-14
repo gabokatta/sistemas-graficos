@@ -1,4 +1,4 @@
-import { mat4, vec3 } from "gl-matrix";
+import type { vec3 } from "gl-matrix";
 import { DEFAULT_DELTA, Segment } from "./segment";
 import { DrawMethod, WebGL } from "../webgl";
 
@@ -12,8 +12,6 @@ export abstract class Curve  {
 
     B: Function[] = [];
     dB: Function[]  = [];
-
-    transform: mat4 = mat4.create();
 
     constructor(points: vec3[], level: CurveLevel) { 
         this.controlPoints = points;
@@ -29,7 +27,7 @@ export abstract class Curve  {
 
     glDraw(gl: WebGL, delta: number = DEFAULT_DELTA): void {
         let {p, n} = this.discretize(delta);
-        const idx = [...Array(p.length/3).keys()];
+        const idx = [...Array(p.length).keys()];
         let points: number[] = [];
         for (let point of p) {
             points.push(...point);
@@ -51,11 +49,6 @@ export abstract class Curve  {
             discretized.t.push(data.t);
         }
         return discretized;
-    }
-
-    setTransform(transform: mat4) {
-        this.transform = transform;
-        return this;
     }
 
     getPointData(u: number): any {

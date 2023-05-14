@@ -11,6 +11,10 @@ export class Path implements Sweepable {
         this.path = path;
     }
 
+    getPath(): Curve {
+        return this.path;
+    }
+
     getShape(): Curve {
         return this.shape;
     }
