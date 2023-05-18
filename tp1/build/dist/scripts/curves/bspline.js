@@ -20,20 +20,6 @@ export class BSpline extends Curve {
       this.length += s.length;
     });
   }
-  static straightLines(points) {
-    let _points = [];
-    for (let p of points) {
-      _points.push(p, p, p);
-    }
-    _points.push(...points.slice(-1));
-    let splineStraight = new BSpline(_points, CurveLevel.CUBIC);
-    splineStraight.segments.pop();
-    splineStraight.segments.forEach((s) => {
-      s.length = 1;
-    });
-    splineStraight.length = splineStraight.segments.length;
-    return splineStraight;
-  }
   getSegmentAmount() {
     return this.controlPoints.length - this.level;
   }

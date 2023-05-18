@@ -1,4 +1,3 @@
-import type { vec3 } from "gl-matrix";
 import type { WebGL } from "./webgl";
 
 export interface Geometry{

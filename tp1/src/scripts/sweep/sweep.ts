@@ -1,8 +1,15 @@
 import { mat4, vec3 } from "gl-matrix";
 import { buildIndex, Geometry } from "../geometry";
-import {  DrawMethod, WebGL } from "../webgl";
+import type { WebGL } from "../webgl";
 import type { Curve } from "../curves/curve";
 
+// TODO: 
+// - IMPLEMENT SHADER HANDLER.
+// - DRAW NORMALS FOR AND OBJECT AND CHECK CORRECT FUNCTIONALITY.
+// - FIX GODDAMN SWEEP.
+
+// Weird visual bug when levels do not match cols.
+// Implement covers.
 
 export class SweepSurface implements Geometry {
 
@@ -15,8 +22,6 @@ export class SweepSurface implements Geometry {
     levels: number;
 
     sweep: Sweepable;
-    coverBuffers: any;
-    useCovers = true;
 
     constructor(sweep: Sweepable, levels: number = -1) {
         this.sweep = sweep;
@@ -42,7 +47,7 @@ export class SweepSurface implements Geometry {
     };
 
     getPointData(alfa: number, beta: number): any {
-        let path = this.sweep.discretizePath(1 / this.levels);
+        let path = this.sweep.discretizePath(1 / (this.levels));
         let shape = this.sweep.getShape().discretize(1 / this.cols);
         let {posM , norM} = levelMatrices(path, alfa);
         let p = vec3.transformMat4(vec3.create(), shape.p[beta], posM)
@@ -53,54 +58,8 @@ export class SweepSurface implements Geometry {
 
     draw(gl: WebGL): void {
         gl.draw(this.position, this.index, this.normal);
-        if (this.useCovers) {
-            let {top, bottom} = this.buildCoverBuffers();
-            [top, bottom].forEach((c) => {
-                gl.draw(c.position, c.index, c.normal, DrawMethod.Fan);
-            })
-        }
     }
 
-    buildCoverBuffers() {
-        if (this.coverBuffers) return this.coverBuffers;
-        let top: any = {position: [], index: [], normal: []}
-        let bottom: any = {position: [], index: [], normal: []}
-
-        let topCenter: vec3 = this.sweep.getPath().getPointData(1).p;
-        let bottomCenter: vec3 = this.sweep.getPath().getPointData(0).p;
-
-        // TOP COVER:
-        top.position.push(...topCenter);
-        top.normal.push(0,1,0)
-        const topCenterIndex = top.position.length;
-        for (let j = 0; j <= this.cols; j++) {
-            let {p} = this.getPointData(0, j);
-            top.position.push(...p)
-            top.normal.push(0,1,0);
-        }
-        for (let j = 0; j <= this.cols; j++) {
-            top.index.push(topCenterIndex, j+1,j);
-        }
-        top.index.push(topCenterIndex, 0, this.cols);
-
-        console.log(top)
-
-        // BOTTOM COVER:
-        bottom.position.push(...bottomCenter);
-        const bottomCenterIndex = bottom.position.length;
-        for (let j = 0; j <= this.cols; j++) {
-            let {p} = this.getPointData(0, j);
-            bottom.position.push(...p)
-            bottom.normal.push(0,-1,0);
-        }
-        for (let j = 0; j <= this.cols; j++) {
-            bottom.index.push(bottomCenterIndex, j+1,j);
-        }
-        bottom.index.push(bottomCenterIndex, 0, this.cols);
-
-        this.coverBuffers = {top: top, bottom: bottom};
-        return this.coverBuffers;
-    }
 }
 
 export interface Sweepable {

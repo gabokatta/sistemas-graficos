@@ -8,7 +8,7 @@ export class Segment {
     controlPoints: vec3[];
     curve: Curve;
     length: number = 0;
-    binormal: vec3 = vec3.fromValues(0,0,-1);
+    binormal: vec3 = vec3.fromValues(0,0,1);
 
     constructor(points: vec3[] = [], curve: Curve) {
         this.controlPoints = points;

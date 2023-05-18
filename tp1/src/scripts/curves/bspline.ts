@@ -24,24 +24,6 @@ export class BSpline extends Curve {
         })
     }
 
-    static straightLines(points: vec3[]): BSpline {
-      let _points = [];
-      for (let p of points) {
-        _points.push(p,p,p);
-      }
-      _points.push(...points.slice(-1));
-
-      let splineStraight =  new BSpline(_points, CurveLevel.CUBIC);
-      // Removing redundant segment.
-      splineStraight.segments.pop();
-
-      // Make segment lengths uniform.
-      splineStraight.segments.forEach((s) => {s.length = 1;})
-      splineStraight.length = splineStraight.segments.length;
-
-      return splineStraight;
-    }
-
     getSegmentAmount(): number {
       return this.controlPoints.length - this.level;
     }

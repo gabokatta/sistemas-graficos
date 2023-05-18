@@ -4,7 +4,7 @@ export const DEFAULT_DELTA = 0.01;
 export class Segment {
   constructor(points = [], curve) {
     this.length = 0;
-    this.binormal = vec3.fromValues(0, 0, -1);
+    this.binormal = vec3.fromValues(0, 0, 1);
     this.controlPoints = points;
     this.curve = curve;
   }
