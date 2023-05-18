@@ -30,12 +30,12 @@ export class SweepSurface {
     let cover = {p: [], n: [], idx: []};
     let center = this.sweep.getPath().getPointData(1);
     cover.p.push(...center.p);
-    cover.n.push(...invertNormals ? negateVec(center.t) : center.t);
+    cover.n.push(...invertNormals == true ? negateVec(center.t) : center.t);
     let shape = this.discretizedShape;
     for (let i = 0; i < shape.p.length; i++) {
       let point = this.getPointData(this.levels, i);
       cover.p.push(...point.p);
-      cover.n.push(...invertNormals ? negateVec(point.t) : point.t);
+      cover.n.push(...invertNormals == true ? negateVec(point.t) : point.t);
     }
     let n_points = cover.p.length / 3;
     cover.idx.push(...Array(n_points).keys());
@@ -45,12 +45,12 @@ export class SweepSurface {
     let cover = {p: [], n: [], idx: []};
     let center = this.sweep.getPath().getPointData(0);
     cover.p.push(...center.p);
-    cover.n.push(...invertNormals ? negateVec(center.t) : center.t);
+    cover.n.push(...invertNormals == true ? negateVec(center.t) : center.t);
     let shape = this.discretizedShape;
     for (let i = 0; i < shape.p.length; i++) {
       let point = this.getPointData(0, i);
       cover.p.push(...point.p);
-      cover.n.push(...invertNormals ? negateVec(point.t) : point.t);
+      cover.n.push(...invertNormals == true ? negateVec(point.t) : point.t);
     }
     let n_points = cover.p.length / 3;
     cover.idx.push(...Array(n_points).keys());

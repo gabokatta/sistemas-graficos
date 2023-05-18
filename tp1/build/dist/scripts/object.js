@@ -1,6 +1,6 @@
 import {mat4, vec3} from "../../snowpack/pkg/gl-matrix.js";
 export class Object3D {
-  constructor(geometry, transformations, color = [0, 0, 0]) {
+  constructor(geometry, transformations, color) {
     this.transformations = [];
     this.transform = mat4.create();
     this.transformations = transformations.reverse();
@@ -14,6 +14,7 @@ export class Object3D {
     mat4.multiply(m, parent, this.transform);
     if (this.geometry) {
       gl.setModel(m);
+      gl.setColor(this.color);
       this.geometry.draw(gl);
     }
     this.children.forEach((c) => c.draw(gl, m));

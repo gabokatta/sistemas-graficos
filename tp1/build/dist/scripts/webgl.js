@@ -3,12 +3,16 @@ const vertexShaderPath = "dist/shaders/vertex.glsl";
 const fragmentShaderPath = "dist/shaders/fragment.glsl";
 export class WebGL {
   constructor(canvas) {
+    this.normalColoring = false;
+    this.showLines = false;
+    this.showSurface = true;
     this.canvas = canvas;
     this.modelMatrix = mat4.create();
     this.viewMatrix = mat4.create();
     this.projMatrix = mat4.create();
     this.normalMatrix = mat4.create();
     this.method = DrawMethod.Smooth;
+    this.color = [0.8, 0.8, 1];
     if (!canvas)
       throw Error("Your browser does not support WebGL");
     this.gl = canvas.getContext("webgl");
@@ -25,6 +29,8 @@ export class WebGL {
     await this.setUpShaders(vertexShader, fragmentShader);
     this.setUpMatrices();
     this.cleanGL();
+    this.setColor(this.color);
+    this.setNormalColoring(this.normalColoring);
     return this;
   }
   setUpMatrices() {
@@ -62,7 +68,13 @@ export class WebGL {
     this.setAttribute(vertexBuffer, 3, "aVertexPosition");
     this.setAttribute(normalBuffer, 3, "aVertexNormal");
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    this.gl.drawElements(method, index.length, this.gl.UNSIGNED_SHORT, 0);
+    if (this.showSurface)
+      this.gl.drawElements(method, index.length, this.gl.UNSIGNED_SHORT, 0);
+    if (this.showLines) {
+      this.setDrawColor([0.4, 0.4, 0.4]);
+      this.gl.drawElements(this.gl.LINE_STRIP, index.length, this.gl.UNSIGNED_SHORT, 0);
+      this.setDrawColor(this.color);
+    }
   }
   drawVec(p, dir, len, normals = [0, 0, 0, 0, 0, 0]) {
     let dirNorm = vec3.normalize(vec3.create(), vec3.fromValues(dir[0], dir[1], dir[2]));
@@ -81,6 +93,21 @@ export class WebGL {
     this.gl.enableVertexAttribArray(attributeLocation);
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
     this.gl.vertexAttribPointer(attributeLocation, size, this.gl.FLOAT, false, 0, 0);
+  }
+  setColor(color) {
+    this.color = color;
+    this.setDrawColor(this.color);
+  }
+  setDrawColor(color) {
+    const modelColor = color.length == 0 ? [1, 0, 1] : color;
+    const colorUniform = this.gl.getUniformLocation(this.program, "modelColor");
+    this.gl.uniform3fv(colorUniform, vec3.fromValues(modelColor[0], modelColor[1], modelColor[2]));
+  }
+  setNormalColoring(bool) {
+    this.normalColoring = bool;
+    const normalColoringUniform = this.gl.getUniformLocation(this.program, "normalColoring");
+    this.gl.uniform1i(normalColoringUniform, Number(bool));
+    return this;
   }
   setView(view) {
     this.viewMatrix = view;

@@ -7,9 +7,9 @@ export class Object3D {
     transformations: Transformation[] = [];
     children: Object3D[];
     geometry: Geometry;
-    color: number[];
+    color: any;
   
-    constructor(geometry: Geometry, transformations: Transformation[], color = [0, 0, 0]) {
+    constructor(geometry: Geometry, transformations: Transformation[], color: any) {
       this.transform = mat4.create();
       this.transformations = transformations.reverse();
 
@@ -27,6 +27,7 @@ export class Object3D {
 
       if (this.geometry) {
         gl.setModel(m);
+        gl.setColor(this.color);
         this.geometry.draw(gl);
       }
   

@@ -49,4 +49,5 @@ var cubeSon = new Object3D(new Cube(2, 2), sonTransforms, []);
 var cubeSon2 = new Object3D(new Cube(2, 2), son2Transforms, []);
 var cube = new Object3D(new Cube(2, 2), [], []);
 cube.setChildren([cubeSon, cubeSon2]);
+gl.setNormalColoring(true);
 tick();

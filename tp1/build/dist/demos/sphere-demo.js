@@ -57,4 +57,5 @@ var sphere = new Object3D(new Sphere(4), [
   Transformation.translate([0, -1, 0])
 ], []);
 sphere.setChildren([sonSphere, sonSphere2, sonSphere3]);
+gl.setNormalColoring(true);
 tick();
