@@ -1,15 +1,7 @@
 import { mat4, vec3 } from "gl-matrix";
 import { buildIndex, Geometry } from "../geometry";
-import type { WebGL } from "../webgl";
+import { DrawMethod, WebGL } from "../webgl";
 import type { Curve } from "../curves/curve";
-
-// TODO: 
-// - IMPLEMENT SHADER HANDLER.
-// - DRAW NORMALS FOR AND OBJECT AND CHECK CORRECT FUNCTIONALITY.
-// - FIX GODDAMN SWEEP.
-
-// Weird visual bug when levels do not match cols.
-// Implement covers.
 
 export class SweepSurface implements Geometry {
 
@@ -21,13 +13,72 @@ export class SweepSurface implements Geometry {
     cols: number = 75;
     levels: number;
 
+    useCovers: boolean = true;
+    covers: any = undefined;
+
     sweep: Sweepable;
+    discretizedPath: any;
+    discretizedShape: any;
 
     constructor(sweep: Sweepable, levels: number = -1) {
-        this.sweep = sweep;
         this.levels = levels <= -1 ? this.rows : levels;
+        this.sweep = sweep;
+        this.discretizedPath = this.sweep.discretizePath(1 / (this.levels));
+        this.discretizedShape = this.sweep.getShape().discretize(1 / (this.cols));
         this.buildSweepableBuffers();
         buildIndex(this);
+    }
+
+    getCovers() {
+        if (this.covers) {
+            return this.covers;
+        }
+        this.covers = {top: this.topCover(), bottom: this.bottomCover(true)};
+        console.log("top", this.covers.top)
+        console.log("bottom", this.covers.bottom)
+        return this.covers;
+    }
+
+    topCover(invertNormals: boolean = false): {p: number[], n: number[], idx: number[]} {
+        let cover: {p: number[], n: number[], idx: number[]} = {p: [], n: [], idx: []};
+
+        let center = this.sweep.getPath().getPointData(1);
+        cover.p.push(...center.p);
+        cover.n.push(...(invertNormals ? negateVec(center.t) : center.t));
+
+        let shape = this.discretizedShape;
+
+        for (let i = 0; i < shape.p.length; i++) {
+            let point = this.getPointData(this.levels, i);
+            cover.p.push(...point.p);
+            cover.n.push(...(invertNormals ? negateVec(point.t) : point.t))
+        }
+
+        let n_points = cover.p.length / 3;
+        cover.idx.push(...Array(n_points).keys());
+
+        return {p: cover.p,  n: cover.n, idx: cover.idx}
+    }
+
+    bottomCover(invertNormals: boolean = false): {p: number[], n: number[], idx: number[]} {
+        let cover: {p: number[], n: number[], idx: number[]} = {p: [], n: [], idx: []};
+
+        let center = this.sweep.getPath().getPointData(0);
+        cover.p.push(...center.p);
+        cover.n.push(...(invertNormals ? negateVec(center.t) : center.t));
+
+        let shape = this.discretizedShape;
+
+        for (let i = 0; i < shape.p.length; i++) {
+            let point = this.getPointData(0, i);
+            cover.p.push(...point.p);
+            cover.n.push(...(invertNormals ? negateVec(point.t) : point.t))
+        }
+
+        let n_points = cover.p.length / 3;
+        cover.idx.push(...Array(n_points).keys());
+
+        return {p: cover.p,  n: cover.n, idx: cover.idx}
     }
 
     buildSweepableBuffers(): void {
@@ -47,8 +98,8 @@ export class SweepSurface implements Geometry {
     };
 
     getPointData(alfa: number, beta: number): any {
-        let path = this.sweep.discretizePath(1 / (this.levels));
-        let shape = this.sweep.getShape().discretize(1 / this.cols);
+        let path = this.discretizedPath;
+        let shape = this.discretizedShape;
         let {posM , norM} = levelMatrices(path, alfa);
         let p = vec3.transformMat4(vec3.create(), shape.p[beta], posM)
         let t = vec3.transformMat4(vec3.create(), shape.t[beta], norM)
@@ -58,6 +109,12 @@ export class SweepSurface implements Geometry {
 
     draw(gl: WebGL): void {
         gl.draw(this.position, this.index, this.normal);
+        if (this.useCovers) {
+            let covers = this.getCovers();
+            [covers.top, covers.bottom].forEach((c) => {
+                gl.draw(c.p, c.idx, c.n, DrawMethod.Fan);
+            })
+        }
     }
 
 }
@@ -91,4 +148,8 @@ function normalMatrix(n: vec3, b: vec3, t: vec3, p: vec3): mat4 {
         t[0], t[1], t[2], 0,
         0, 0, 0, 0,
     )
+}
+
+function negateVec(vec: vec3): vec3 {
+    return vec3.negate(vec3.create(), vec);
 }

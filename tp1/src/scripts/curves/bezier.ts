@@ -33,6 +33,7 @@ export class Bezier extends Curve  {
       const n = this.controlPoints.length;
       return (n-1)/this.level;
     }
+
 }
 
 

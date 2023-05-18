@@ -26,12 +26,11 @@ function animate(t: number) {
 
 function getPath() {
     const points = [
-        // Seg 1
         vec3.fromValues(0, 0, 0),
         vec3.fromValues(0, 2, 0),
         vec3.fromValues(2, 2, 0),
-        vec3.fromValues(4, 2, 0),
-        vec3.fromValues(5, 2, 0),
+        vec3.fromValues(2.5, 2, 0),
+        vec3.fromValues(3, 2, 0),
     ];
 
     return new Bezier(points, CurveLevel.CUADRATIC);
@@ -39,7 +38,6 @@ function getPath() {
 
 function getShape() {
     const points = [
-        // Seg 1
         vec3.fromValues(0, 0, 0),
         vec3.fromValues(1.5, 3, 0),
         vec3.fromValues(1.5, 3, 0),
@@ -64,6 +62,7 @@ function tick() {
 
 let path  = getPath();
 let shape = getShape();
+console.log(path);
 let sweepable = new Path(shape, path);
 let sweep =  new Object3D(new SweepSurface(sweepable), [], []);
 

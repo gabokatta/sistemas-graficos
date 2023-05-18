@@ -1,5 +1,6 @@
 import {mat4, vec3} from "../../../snowpack/pkg/gl-matrix.js";
 import {buildIndex} from "../geometry.js";
+import {DrawMethod} from "../webgl.js";
 export class SweepSurface {
   constructor(sweep, levels = -1) {
     this.index = [];
@@ -7,10 +8,53 @@ export class SweepSurface {
     this.normal = [];
     this.rows = 75;
     this.cols = 75;
-    this.sweep = sweep;
+    this.useCovers = true;
+    this.covers = void 0;
     this.levels = levels <= -1 ? this.rows : levels;
+    this.sweep = sweep;
+    this.discretizedPath = this.sweep.discretizePath(1 / this.levels);
+    this.discretizedShape = this.sweep.getShape().discretize(1 / this.cols);
     this.buildSweepableBuffers();
     buildIndex(this);
+  }
+  getCovers() {
+    if (this.covers) {
+      return this.covers;
+    }
+    this.covers = {top: this.topCover(), bottom: this.bottomCover(true)};
+    console.log("top", this.covers.top);
+    console.log("bottom", this.covers.bottom);
+    return this.covers;
+  }
+  topCover(invertNormals = false) {
+    let cover = {p: [], n: [], idx: []};
+    let center = this.sweep.getPath().getPointData(1);
+    cover.p.push(...center.p);
+    cover.n.push(...invertNormals ? negateVec(center.t) : center.t);
+    let shape = this.discretizedShape;
+    for (let i = 0; i < shape.p.length; i++) {
+      let point = this.getPointData(this.levels, i);
+      cover.p.push(...point.p);
+      cover.n.push(...invertNormals ? negateVec(point.t) : point.t);
+    }
+    let n_points = cover.p.length / 3;
+    cover.idx.push(...Array(n_points).keys());
+    return {p: cover.p, n: cover.n, idx: cover.idx};
+  }
+  bottomCover(invertNormals = false) {
+    let cover = {p: [], n: [], idx: []};
+    let center = this.sweep.getPath().getPointData(0);
+    cover.p.push(...center.p);
+    cover.n.push(...invertNormals ? negateVec(center.t) : center.t);
+    let shape = this.discretizedShape;
+    for (let i = 0; i < shape.p.length; i++) {
+      let point = this.getPointData(0, i);
+      cover.p.push(...point.p);
+      cover.n.push(...invertNormals ? negateVec(point.t) : point.t);
+    }
+    let n_points = cover.p.length / 3;
+    cover.idx.push(...Array(n_points).keys());
+    return {p: cover.p, n: cover.n, idx: cover.idx};
   }
   buildSweepableBuffers() {
     let points = [];
@@ -28,8 +72,8 @@ export class SweepSurface {
     this.position = points;
   }
   getPointData(alfa, beta) {
-    let path = this.sweep.discretizePath(1 / this.levels);
-    let shape = this.sweep.getShape().discretize(1 / this.cols);
+    let path = this.discretizedPath;
+    let shape = this.discretizedShape;
     let {posM, norM} = levelMatrices(path, alfa);
     let p = vec3.transformMat4(vec3.create(), shape.p[beta], posM);
     let t = vec3.transformMat4(vec3.create(), shape.t[beta], norM);
@@ -38,6 +82,12 @@ export class SweepSurface {
   }
   draw(gl) {
     gl.draw(this.position, this.index, this.normal);
+    if (this.useCovers) {
+      let covers = this.getCovers();
+      [covers.top, covers.bottom].forEach((c) => {
+        gl.draw(c.p, c.idx, c.n, DrawMethod.Fan);
+      });
+    }
   }
 }
 export function levelMatrices(data, index) {
@@ -51,4 +101,7 @@ function positionMatrix(n, b, t, p) {
 }
 function normalMatrix(n, b, t, p) {
   return mat4.fromValues(n[0], n[1], n[2], 0, b[0], b[1], b[2], 0, t[0], t[1], t[2], 0, 0, 0, 0, 0);
+}
+function negateVec(vec) {
+  return vec3.negate(vec3.create(), vec);
 }
