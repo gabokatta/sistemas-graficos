@@ -4,7 +4,7 @@ import { Bezier } from "../curves/bezier";
 import { CurveLevel } from "../curves/curve";
 import { BSpline } from "../curves/bspline";
 
-export class Cube extends SweepSurface {
+export class Box extends SweepSurface {
 
     constructor(width: number, height: number = width) {
         let path: Bezier =  new Bezier(
@@ -17,11 +17,11 @@ export class Cube extends SweepSurface {
         );
 
         let shape: BSpline =  BSpline.straightLines([
-            [-width / 2 , -width / 2 , 0],
-            [-height / 2, width / 2 , 0],
+            [-width / 2, -height / 2, 0],
+            [-width / 2, height / 2, 0],
             [width / 2, height / 2, 0],
             [width / 2, -height / 2, 0],
-            [-width / 2, -width / 2, 0]
+            [-width / 2, -height / 2, 0],
         ])
 
         super(new Path(shape, path));

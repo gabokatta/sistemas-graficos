@@ -1,6 +1,6 @@
 import { DrawMethod, WebGL } from "../scripts/webgl"
 import { Object3D, Transformation } from "../scripts/object";
-import { Cube } from "../scripts/prefabs/cube";
+import { Box } from "../scripts/prefabs/box";
 
 const vertexShaderPath = '../dist/shaders/vertex.glsl';
 const fragmentShaderPath = '../dist/shaders/fragment.glsl';
@@ -11,7 +11,7 @@ var angle = 0;
 var inverse = true;
 
 function animate(t: number) {
-    cube.updateTransform([
+    box.updateTransform([
         Transformation.rotation(t, [1,0,1]),
         Transformation.rotation(t*3, [0,1,0])
     ]);
@@ -27,11 +27,11 @@ function animate(t: number) {
     u =  inverse ? mod(t) : 1.5 - mod(t);
     v = !inverse ? mod(t) : 1.5 - mod(t)
 
-    cubeSon.updateTransform([
+    boxSon.updateTransform([
         Transformation.rotation(t*6, [0,0,1]),
         Transformation.scale([v,v,v])
     ]);
-    cubeSon2.updateTransform([
+    boxSon2.updateTransform([
         Transformation.rotation(-t*6, [1,0,1]),
         Transformation.scale([u,u,u])
     ])
@@ -39,7 +39,7 @@ function animate(t: number) {
 
 function tick() {
     requestAnimationFrame(tick);
-    cube.draw(gl);
+    box.draw(gl);
     angle += 0.01
     animate(angle);
 }
@@ -54,9 +54,8 @@ var sonTransforms = [
     Transformation.translate([-4, 0,0])
 ]
 
-var cubeSon = new Object3D(new Cube(2,2), sonTransforms, []);
-var cubeSon2 = new Object3D(new Cube(2,2), son2Transforms, []);
-var cube = new Object3D(new Cube(2,2), [], []);
-cube.setChildren([cubeSon, cubeSon2]);
-gl.setNormalColoring(true);
+var boxSon = new Object3D(new Box(3,3), sonTransforms, [0.9,0.7, 0.7]);
+var boxSon2 = new Object3D(new Box(3,3), son2Transforms, [0.9,0.7, 0.7]);
+var box = new Object3D(new Box(3,3), [], [0.9,0.7, 0.7]);
+box.setChildren([boxSon, boxSon2]);
 tick();
