@@ -1,3 +1,12 @@
+import {vec3} from "../../snowpack/pkg/gl-matrix.js";
+export function getDrawableNormals(geometry) {
+  let normals = [];
+  for (let i = 0; i <= geometry.position.length - 3; i += 3) {
+    normals.push(vec3.fromValues(geometry.position[i], geometry.position[i + 1], geometry.position[i + 2]));
+    normals.push(vec3.fromValues(geometry.position[i] + geometry.normal[i], geometry.position[i + 1] + geometry.normal[i + 1], geometry.position[i + 2] + geometry.normal[i + 2]));
+  }
+  return normals;
+}
 export function buildIndex(geometry) {
   var indexBuffer = [];
   const indexCalc = (i, j) => j + (geometry.cols + 1) * i;

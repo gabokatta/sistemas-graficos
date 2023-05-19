@@ -1,7 +1,10 @@
 import {mat4, vec3} from "../../snowpack/pkg/gl-matrix.js";
+import {getDrawableNormals} from "./geometry.js";
 export class Object3D {
   constructor(geometry, transformations, color) {
     this.transformations = [];
+    this.drawableNormals = [];
+    this.showNormals = false;
     this.transform = mat4.create();
     this.transformations = transformations.reverse();
     this.children = [];
@@ -16,6 +19,10 @@ export class Object3D {
       gl.setModel(m);
       gl.setColor(this.color);
       this.geometry.draw(gl);
+      if (this.showNormals) {
+        let normals = this.drawableNormals.length == 0 ? getDrawableNormals(this.geometry) : this.drawableNormals;
+        gl.drawObjectNormals(normals);
+      }
     }
     this.children.forEach((c) => c.draw(gl, m));
   }

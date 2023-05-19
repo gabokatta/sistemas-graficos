@@ -1,12 +1,14 @@
 import { mat4, vec3 } from "gl-matrix";
 import type { WebGL } from "./webgl";
-import type { Geometry } from "./geometry";
+import { getDrawableNormals, Geometry } from "./geometry";
 
 export class Object3D {
     transform: mat4;
     transformations: Transformation[] = [];
     children: Object3D[];
     geometry: Geometry;
+    drawableNormals: vec3[] = [];
+    showNormals: boolean = false;
     color: any;
   
     constructor(geometry: Geometry, transformations: Transformation[], color: any) {
@@ -29,6 +31,10 @@ export class Object3D {
         gl.setModel(m);
         gl.setColor(this.color);
         this.geometry.draw(gl);
+        if (this.showNormals) {
+          let normals = this.drawableNormals.length == 0 ? getDrawableNormals(this.geometry) : this.drawableNormals;
+          gl.drawObjectNormals(normals);
+        }
       }
   
       this.children.forEach((c) => c.draw(gl, m));

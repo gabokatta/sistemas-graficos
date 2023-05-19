@@ -55,6 +55,5 @@ let shape = getShape();
 console.log(path);
 let sweepable = new Path(shape, path);
 let sweep = new Object3D(new SweepSurface(sweepable), [], [0.5, 1, 0.2]);
-gl.showLines = true;
 gl.setNormalColoring(true);
 tick();

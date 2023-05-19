@@ -1,3 +1,4 @@
+import { vec3 } from "gl-matrix";
 import type { WebGL } from "./webgl";
 
 export interface Geometry{
@@ -11,6 +12,19 @@ export interface Geometry{
 
     getPointData(alfa: number, beta: number): any;
     draw(gl: WebGL): void;
+}
+
+export function getDrawableNormals(geometry: Geometry): vec3[] {
+    let normals: vec3[] = [];
+    for (let i = 0; i <= geometry.position.length - 3; i += 3) {
+        normals.push(vec3.fromValues(geometry.position[i], geometry.position[i + 1], geometry.position[i + 2]));
+        normals.push(vec3.fromValues(
+            geometry.position[i] + geometry.normal[i], 
+            geometry.position[i + 1] + geometry.normal[i + 1], 
+            geometry.position[i + 2] + geometry.normal[i + 2])
+        );
+    }
+    return normals;
 }
 
 export function buildIndex(geometry: Geometry): void {   
