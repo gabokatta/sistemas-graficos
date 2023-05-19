@@ -15,6 +15,8 @@
 - <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build/demos/sphere.html">TP1 - DEMO ESFERA</a>
 - <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build/demos/cylinder.html">TP1 - DEMO CILINDRO</a>
 - <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build/demos/sinetube.html">TP1 - DEMO TUBO SENOIDAL</a>
+- <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build/demos/sweep.html">TP1 - DEMO BARRIDO</a>
+- <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build/demos/revolution.html">TP1 - DEMO REVOLUCION</a>
 
 
 ## Bibliografía
