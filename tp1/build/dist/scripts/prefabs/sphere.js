@@ -1,4 +1,4 @@
-import {vec3} from "../../../snowpack/pkg/gl-matrix.js";
+import {mat4, vec3} from "../../../snowpack/pkg/gl-matrix.js";
 import {buildBuffers, buildIndex} from "../geometry.js";
 export class Sphere {
   constructor(radius) {
@@ -7,42 +7,46 @@ export class Sphere {
     this.index = [];
     this.position = [];
     this.normal = [];
+    this.binormal = [];
+    this.tangent = [];
+    this.reverseUV = false;
+    this.uvFactors = [1, 1];
+    this.uv = [];
     this.radius = radius;
     buildBuffers(this);
     buildIndex(this);
   }
   getPointData(alfa, beta) {
-    let point = this.getPosition(alfa, beta);
-    let normal = this.getNormals(alfa, beta);
-    return {p: point, n: normal};
-  }
-  getNormals(alfa, beta) {
-    var p = this.getPosition(alfa, beta);
-    var v = vec3.create();
-    vec3.normalize(v, vec3.fromValues(p[0], p[1], p[2]));
-    var delta = 0.05;
-    var p1 = this.getPosition(alfa, beta);
-    var p2 = this.getPosition(alfa, beta + delta);
-    var p3 = this.getPosition(alfa + delta, beta);
-    var v1 = vec3.fromValues(p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]);
-    var v2 = vec3.fromValues(p3[0] - p1[0], p3[1] - p1[1], p3[2] - p1[2]);
-    vec3.normalize(v1, v1);
-    vec3.normalize(v2, v2);
-    var n = vec3.create();
-    vec3.cross(n, v1, v2);
-    vec3.scale(n, n, -1);
-    return n;
-  }
-  getPosition(alfa, beta) {
-    const theta = alfa * 2 * Math.PI;
-    const phi = (beta - 0.5) * Math.PI;
-    var x = this.radius * Math.cos(phi) * Math.cos(theta);
-    var y = this.radius * Math.sin(phi);
-    var z = this.radius * Math.cos(phi) * Math.sin(theta);
-    return vec3.fromValues(x, y, z);
+    let applyRot = (mat2, angle, axis) => {
+      const newMat = mat4.fromRotation(mat4.create(), angle, axis);
+      return mat4.multiply(mat2, newMat, mat2);
+    };
+    let transformVec = (vec, transform) => {
+      let _vec = vec3.fromValues(vec[0], vec[1], vec[2]);
+      vec3.transformMat4(_vec, _vec, transform);
+      return [_vec[0], _vec[1], _vec[2]];
+    };
+    let transaleMat = (mat2, vec) => {
+      const newMat = mat4.fromTranslation(mat4.create(), vec);
+      return mat4.multiply(mat2, newMat, mat2);
+    };
+    let mat = mat4.create();
+    let rot = mat4.create();
+    transaleMat(mat, [this.radius, 0, 0]);
+    applyRot(mat, Math.PI * (0.5 - beta), [0, 0, 1]);
+    applyRot(mat, 2 * Math.PI * alfa, [0, 1, 0]);
+    applyRot(rot, Math.PI * (0.5 - beta), [0, 0, 1]);
+    applyRot(rot, 2 * Math.PI * alfa, [0, 1, 0]);
+    let p = [0, 0, 0];
+    p = transformVec(p, mat);
+    let t = [0, 1, 0];
+    t = transformVec(t, rot);
+    let b = [0, 0, 1];
+    b = transformVec(b, rot);
+    return {p, n: vec3.normalize(vec3.create(), vec3.fromValues(p[0], p[1], p[2])), u: alfa, v: beta, t, b};
   }
   draw(gl) {
-    gl.draw(this.position, this.index, this.normal);
+    gl.drawGeometry(this);
   }
 }
 ;

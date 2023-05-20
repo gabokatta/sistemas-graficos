@@ -28,7 +28,7 @@ function animate(t: number) {
     v = !inverse ? mod(t) : 1.5 - mod(t)
 
     cylinderSon.updateTransform([
-        Transformation.rotation(t*6, [0,0,1]),
+        Transformation.rotation(t*6, [1,0,1]),
         Transformation.scale([v,v,v])
     ]);
     cylinderSon2.updateTransform([
@@ -54,9 +54,9 @@ var sonTransforms = [
     Transformation.translate([-4, 0,0])
 ]
 
-var cylinderSon = new Object3D(new Cylinder(1, 3), sonTransforms, []);
-var cylinderSon2 = new Object3D(new Cylinder(1, 3), son2Transforms, []);
-var cylinder = new Object3D(new Cylinder(1, 3), [], []);
+var cylinderSon = new Object3D(new Cylinder(1,3), sonTransforms, []);
+var cylinderSon2 = new Object3D(new Cylinder(1,3), son2Transforms, []);
+var cylinder = new Object3D(new Cylinder(1,3), [], []);
 cylinder.setChildren([cylinderSon, cylinderSon2]);
 gl.setNormalColoring(true);
 tick();

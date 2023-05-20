@@ -6,6 +6,11 @@ export class SweepSurface {
     this.index = [];
     this.position = [];
     this.normal = [];
+    this.binormal = [];
+    this.tangent = [];
+    this.reverseUV = false;
+    this.uvFactors = [1, 1];
+    this.uv = [];
     this.rows = 75;
     this.cols = 75;
     this.useCovers = true;
@@ -22,8 +27,6 @@ export class SweepSurface {
       return this.covers;
     }
     this.covers = {top: this.topCover(), bottom: this.bottomCover(true)};
-    console.log("top", this.covers.top);
-    console.log("bottom", this.covers.bottom);
     return this.covers;
   }
   topCover(invertNormals = false) {
@@ -59,17 +62,26 @@ export class SweepSurface {
   buildSweepableBuffers() {
     let points = [];
     let normals = [];
+    let binormals = [];
     let tangents = [];
+    let uv = [];
     for (let i = 0; i <= this.levels; i++) {
       for (let j = 0; j <= this.cols; j++) {
-        let {p, t, n} = this.getPointData(i, j);
+        let {p, t, n, b, u, v} = this.getPointData(i, j);
         points.push(...p);
         tangents.push(...t);
         normals.push(...n);
+        binormals.push(...b);
+        if (this.reverseUV) {
+          uv.push(v * this.uvFactors[1], u * this.uvFactors[0]);
+        } else
+          uv.push(u * this.uvFactors[0], v * this.uvFactors[1]);
       }
     }
     this.normal = normals;
     this.position = points;
+    this.tangent = tangents;
+    this.uv = uv;
   }
   getPointData(alfa, beta) {
     let path = this.discretizedPath;
@@ -78,7 +90,10 @@ export class SweepSurface {
     let p = vec3.transformMat4(vec3.create(), shape.p[beta], posM);
     let t = vec3.transformMat4(vec3.create(), shape.t[beta], norM);
     let n = vec3.transformMat4(vec3.create(), shape.n[beta], norM);
-    return {p, t, n};
+    let b = vec3.transformMat4(vec3.create(), shape.b[beta], norM);
+    let u = alfa / this.levels;
+    let v = beta / this.cols;
+    return {p, t, n, b, u, v};
   }
   draw(gl) {
     gl.draw(this.position, this.index, this.normal);

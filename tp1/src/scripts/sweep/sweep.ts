@@ -8,6 +8,12 @@ export class SweepSurface implements Geometry {
     index: number[] = [];
     position: number[] = [];
     normal: number[] = [];
+    binormal: number[] = [];
+    tangent: number[] = [];
+
+    reverseUV: boolean = false;
+    uvFactors: number[] = [1,1];
+    uv: number[] = [];
 
     rows: number = 75;
     cols: number = 75;
@@ -34,13 +40,11 @@ export class SweepSurface implements Geometry {
             return this.covers;
         }
         this.covers = {top: this.topCover(), bottom: this.bottomCover(true)};
-        console.log("top", this.covers.top)
-        console.log("bottom", this.covers.bottom)
         return this.covers;
     }
 
     topCover(invertNormals: boolean = false): {p: number[], n: number[], idx: number[]} {
-        let cover: {p: number[], n: number[], idx: number[]} = {p: [], n: [], idx: []};
+        let cover: {p: number[], n: number[] ,idx: number[]} = {p: [], n: [], idx: []};
 
         let center = this.sweep.getPath().getPointData(1);
         cover.p.push(...center.p);
@@ -84,27 +88,41 @@ export class SweepSurface implements Geometry {
     buildSweepableBuffers(): void {
         let points: number[] = [];
         let normals: number[] = [];
+        let binormals: number[] = [];
         let tangents: number[] = [];
+        let uv: number[] = [];
         for (let i = 0; i <= this.levels; i++) {
             for (let j = 0; j <= this.cols; j++) {
-                let {p, t, n} = this.getPointData(i,j);
+                let {p, t, n, b, u, v} = this.getPointData(i,j);
                 points.push(...p);
                 tangents.push(...t);
                 normals.push(...n);
+                binormals.push(...b);
+                if (this.reverseUV) {
+                    uv.push(v*this.uvFactors[1], u*this.uvFactors[0]);
+                }
+                else uv.push(u*this.uvFactors[0], v*this.uvFactors[1]);
             }
         }
         this.normal = normals;
         this.position = points;
+        this.tangent = tangents;
+        this.uv = uv;
     };
 
     getPointData(alfa: number, beta: number): any {
         let path = this.discretizedPath;
         let shape = this.discretizedShape;
         let {posM , norM} = levelMatrices(path, alfa);
-        let p = vec3.transformMat4(vec3.create(), shape.p[beta], posM)
-        let t = vec3.transformMat4(vec3.create(), shape.t[beta], norM)
-        let n = vec3.transformMat4(vec3.create(), shape.n[beta], norM)
-        return {p, t, n}
+        let p = vec3.transformMat4(vec3.create(), shape.p[beta], posM);
+        let t = vec3.transformMat4(vec3.create(), shape.t[beta], norM);
+        let n = vec3.transformMat4(vec3.create(), shape.n[beta], norM);
+        let b = vec3.transformMat4(vec3.create(), shape.b[beta], norM);
+        // THIS IM NOT REALLY SURE THAT IT WORKS, LETS GET IT WORKING ON OTHER SURFACES FIRST.
+        // COVERS ALSO NOT YET.
+        let u = alfa / this.levels;
+        let v = beta / this.cols;
+        return {p, t, n, b, u, v};
     }
 
     draw(gl: WebGL): void {

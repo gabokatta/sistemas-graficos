@@ -23,7 +23,7 @@ function animate(t) {
   u = inverse ? mod(t) : 1.5 - mod(t);
   v = !inverse ? mod(t) : 1.5 - mod(t);
   cylinderSon.updateTransform([
-    Transformation.rotation(t * 6, [0, 0, 1]),
+    Transformation.rotation(t * 6, [1, 0, 1]),
     Transformation.scale([v, v, v])
   ]);
   cylinderSon2.updateTransform([

@@ -76,6 +76,28 @@ export class WebGL {
       this.setDrawColor(this.color);
     }
   }
+  drawGeometry(geometry, method = this.method) {
+    this.setMatrixUniforms();
+    const vertexBuffer = this.createBuffer(geometry.position);
+    const normalBuffer = this.createBuffer(geometry.normal);
+    const binormalBuffer = this.createBuffer(geometry.binormal);
+    const tangentBuffer = this.createBuffer(geometry.binormal);
+    const uvBuffer = this.createBuffer(geometry.uv);
+    const indexBuffer = this.createIndexBuffer(geometry.index);
+    this.setAttribute(vertexBuffer, 3, "aVertexPosition");
+    this.setAttribute(normalBuffer, 3, "aVertexNormal");
+    this.setAttribute(binormalBuffer, 3, "aVertexBinormal");
+    this.setAttribute(tangentBuffer, 3, "aVertexTangent");
+    this.setAttribute(uvBuffer, 2, "aVertexUV");
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    if (this.showSurface)
+      this.gl.drawElements(method, geometry.index.length, this.gl.UNSIGNED_SHORT, 0);
+    if (this.showLines) {
+      this.setDrawColor([0.4, 0.4, 0.4]);
+      this.gl.drawElements(this.gl.LINE_STRIP, geometry.index.length, this.gl.UNSIGNED_SHORT, 0);
+      this.setDrawColor(this.color);
+    }
+  }
   drawObjectNormals(n) {
     for (let i = 0; i < n.length; i += 24) {
       this.drawLine(n[i], n[i + 1]);
@@ -83,6 +105,18 @@ export class WebGL {
   }
   drawLine(p1, p2, normals = [0, 0, 0, 0, 0, 0]) {
     this.draw([...p1, ...p2], [0, 1], normals, DrawMethod.Lines);
+  }
+  createBuffer(array) {
+    const buffer = this.gl.createBuffer();
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(array), this.gl.STATIC_DRAW);
+    return buffer;
+  }
+  createIndexBuffer(index) {
+    const buffer = this.gl.createBuffer();
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, buffer);
+    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index), this.gl.STATIC_DRAW);
+    return buffer;
   }
   setDrawMethod(method) {
     this.method = method;
@@ -131,18 +165,6 @@ export class WebGL {
   setMatrix(name, matrix) {
     var matrixUniform = this.gl.getUniformLocation(this.program, name);
     this.gl.uniformMatrix4fv(matrixUniform, false, matrix);
-  }
-  createBuffer(array) {
-    const buffer = this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(array), this.gl.STATIC_DRAW);
-    return buffer;
-  }
-  createIndexBuffer(index) {
-    const buffer = this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, buffer);
-    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index), this.gl.STATIC_DRAW);
-    return buffer;
   }
 }
 function makeShader(gl, src, type) {

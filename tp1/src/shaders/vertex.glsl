@@ -2,6 +2,9 @@ precision highp float;
 
 attribute vec3 aVertexPosition;
 attribute vec3 aVertexNormal;
+attribute vec3 aVertexBinormal;
+attribute vec3 aVertexTangent;
+attribute vec3 aVertexUV;
 
 uniform mat4 modelMatrix;            
 uniform mat4 viewMatrix;

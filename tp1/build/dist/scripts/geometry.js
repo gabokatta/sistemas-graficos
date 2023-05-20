@@ -24,9 +24,16 @@ export function buildBuffers(geometry) {
     for (var j = 0; j <= cols; j++) {
       var alfa = i / rows;
       var beta = j / cols;
-      var {p, n} = geometry.getPointData(alfa, beta);
+      var {p, n, b, t, u, v} = geometry.getPointData(alfa, beta);
       geometry.position.push(...p);
       geometry.normal.push(...n);
+      geometry.binormal.push(...b);
+      geometry.tangent.push(...t);
+      if (geometry.reverseUV) {
+        geometry.uv.push(v * geometry.uvFactors[1], u * geometry.uvFactors[0]);
+      } else {
+        geometry.uv.push(u * geometry.uvFactors[0], v * geometry.uvFactors[1]);
+      }
     }
   }
 }
