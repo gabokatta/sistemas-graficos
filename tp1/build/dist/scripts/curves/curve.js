@@ -25,7 +25,11 @@ export class Curve {
     for (let normal of n) {
       normals.push(...normal);
     }
-    gl.draw(points, idx, normals, DrawMethod.LineStrip);
+    gl.draw({
+      position: points,
+      index: idx,
+      normal: normals
+    }, DrawMethod.LineStrip);
   }
   discretize(delta = DEFAULT_DELTA) {
     let discretized = {p: [], n: [], b: [], t: []};

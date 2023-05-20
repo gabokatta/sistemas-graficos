@@ -44,7 +44,7 @@ export class SweepSurface implements Geometry {
     }
 
     topCover(invertNormals: boolean = false): {p: number[], n: number[], t: number[], b: number[] , uv: number[], idx: number[]} {
-        let cover: {p: number[], n: number[], t: number[], b: number[] , uv: number[], idx: number[]} = {p: [], n: [], b: [], t: [], uv: [],idx: []};
+        let cover: any = {p: [], n: [], b: [], t: [], uv: [],idx: []};
 
         let center = this.sweep.getPath().getPointData(1);
         cover.p.push(...center.p);
@@ -84,7 +84,7 @@ export class SweepSurface implements Geometry {
     }
 
     bottomCover(invertNormals: boolean = false): {p: number[], n: number[], t: number[], b: number[] , uv: number[], idx: number[]} {
-        let cover: {p: number[], n: number[], t: number[], b: number[] , uv: number[], idx: number[]} = {p: [], n: [], b: [], t: [], uv: [],idx: []};
+        let cover: any = {p: [], n: [], b: [], t: [], uv: [],idx: []};
 
         let center = this.sweep.getPath().getPointData(0);
         cover.p.push(...center.p);
