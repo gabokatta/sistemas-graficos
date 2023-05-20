@@ -111,23 +111,6 @@ export class WebGL {
         this.gl.useProgram(this.program);
     }
 
-    drawLines(vertex: Array<number>, index: Array<number>, normals: Array<number>, method: DrawMethod = this.method) {
-        this.setMatrixUniforms();
-        const vertexBuffer = this.createBuffer(vertex);
-        const normalBuffer = this.createBuffer(normals);
-        const indexBuffer = this.createIndexBuffer(index);
-
-        this.setAttribute(vertexBuffer, 3 , "aVertexPosition");
-        this.setAttribute(normalBuffer, 3 , "aVertexNormal");
-        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        if (this.showSurface) this.gl.drawElements(method, index.length, this.gl.UNSIGNED_SHORT, 0);
-        if (this.showLines) {
-            this.setDrawColor([0.4, 0.4, 0.4]);
-            this.gl.drawElements(this.gl.LINE_STRIP, index.length, this.gl.UNSIGNED_SHORT, 0);
-            this.setDrawColor(this.color);
-        }
-    }
-
     draw(geometry: any, method: DrawMethod =  this.method) {
         this.setMatrixUniforms();
         const vertexBuffer = this.createBuffer(geometry.position);
@@ -160,7 +143,12 @@ export class WebGL {
     }
 
     drawLine(p1: vec3, p2: vec3, normals: number[] = [0,0,0,0,0,0]) {
-        this.drawLines([...p1, ...p2], [0,1], normals, DrawMethod.Lines);    
+        this.draw({
+                position: [...p1, ...p2],
+                index: [0,1],
+                normal: normals
+            },
+        DrawMethod.Lines);
     }
 
     // Utility Methods
