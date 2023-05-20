@@ -5,6 +5,7 @@ export class Object3D {
     this.transformations = [];
     this.drawableNormals = [];
     this.showNormals = false;
+    this.useTexture = false;
     this.transform = mat4.create();
     this.transformations = transformations.reverse();
     this.children = [];
@@ -18,7 +19,13 @@ export class Object3D {
     if (this.geometry) {
       gl.setModel(m);
       gl.setColor(this.color);
-      this.geometry.draw(gl);
+      if (this.useTexture) {
+        gl.setUseTexture(true);
+        this.geometry.draw(gl);
+        gl.setUseTexture(false);
+      } else {
+        this.geometry.draw(gl);
+      }
       if (this.showNormals) {
         let normals = this.drawableNormals.length == 0 ? getDrawableNormals(this.geometry) : this.drawableNormals;
         gl.drawObjectNormals(normals);

@@ -43,8 +43,8 @@ export class SweepSurface implements Geometry {
         return this.covers;
     }
 
-    topCover(invertNormals: boolean = false): {p: number[], n: number[], idx: number[]} {
-        let cover: {p: number[], n: number[] ,idx: number[]} = {p: [], n: [], idx: []};
+    topCover(invertNormals: boolean = false): {p: number[], n: number[], t: number[], b: number[] , uv: number[], idx: number[]} {
+        let cover: {p: number[], n: number[], t: number[], b: number[] , uv: number[], idx: number[]} = {p: [], n: [], b: [], t: [], uv: [],idx: []};
 
         let center = this.sweep.getPath().getPointData(1);
         cover.p.push(...center.p);
@@ -52,20 +52,39 @@ export class SweepSurface implements Geometry {
 
         let shape = this.discretizedShape;
 
+        let global_uv = [];
         for (let i = 0; i < shape.p.length; i++) {
             let point = this.getPointData(this.levels, i);
             cover.p.push(...point.p);
             cover.n.push(...(invertNormals == true ? negateVec(point.t) : point.t))
+            cover.t.push(...point.t)
+            cover.b.push(...point.b);
+
+            let u = point.p[0];
+            let v = point.p[1];
+            global_uv.push([u,v]);
         }
 
         let n_points = cover.p.length / 3;
         cover.idx.push(...Array(n_points).keys());
 
-        return {p: cover.p,  n: cover.n, idx: cover.idx}
+        let u_arr = global_uv.map((uv) => uv[0]);
+        let v_arr = global_uv.map((uv) => uv[1]);
+
+        let max_u = Math.max(...u_arr, Math.abs(Math.min(...u_arr)));
+        let max_v = Math.max(...v_arr, Math.abs(Math.min(...v_arr)));
+
+        for (let i = 0; i < n_points; i++) {
+            let u = u_arr[i] / max_u;
+            let v = v_arr[i] / max_v;
+            cover.uv.push(this.uvFactors[0]*u, this.uvFactors[1]*v);
+        }
+
+        return {p: cover.p,  n: cover.n, t: cover.t, b: cover.b, uv: cover.uv,idx: cover.idx}
     }
 
-    bottomCover(invertNormals: boolean = false): {p: number[], n: number[], idx: number[]} {
-        let cover: {p: number[], n: number[], idx: number[]} = {p: [], n: [], idx: []};
+    bottomCover(invertNormals: boolean = false): {p: number[], n: number[], t: number[], b: number[] , uv: number[], idx: number[]} {
+        let cover: {p: number[], n: number[], t: number[], b: number[] , uv: number[], idx: number[]} = {p: [], n: [], b: [], t: [], uv: [],idx: []};
 
         let center = this.sweep.getPath().getPointData(0);
         cover.p.push(...center.p);
@@ -73,16 +92,35 @@ export class SweepSurface implements Geometry {
 
         let shape = this.discretizedShape;
 
+        let global_uv = [];
         for (let i = 0; i < shape.p.length; i++) {
             let point = this.getPointData(0, i);
             cover.p.push(...point.p);
             cover.n.push(...(invertNormals == true ? negateVec(point.t) : point.t))
+            cover.t.push(...point.t)
+            cover.b.push(...point.b);
+
+            let u = point.p[0];
+            let v = point.p[1];
+            global_uv.push([u,v]);
         }
 
         let n_points = cover.p.length / 3;
         cover.idx.push(...Array(n_points).keys());
 
-        return {p: cover.p,  n: cover.n, idx: cover.idx}
+        let u_arr = global_uv.map((uv) => uv[0]);
+        let v_arr = global_uv.map((uv) => uv[1]);
+
+        let max_u = Math.max(...u_arr, Math.abs(Math.min(...u_arr)));
+        let max_v = Math.max(...v_arr, Math.abs(Math.min(...v_arr)));
+
+        for (let i = 0; i < n_points; i++) {
+            let u = u_arr[i] / max_u;
+            let v = v_arr[i] / max_v;
+            cover.uv.push(this.uvFactors[0]*u, this.uvFactors[1]*v);
+        }
+
+        return {p: cover.p,  n: cover.n, t: cover.t, b: cover.b, uv: cover.uv,idx: cover.idx}
     }
 
     buildSweepableBuffers(): void {
@@ -118,19 +156,25 @@ export class SweepSurface implements Geometry {
         let t = vec3.transformMat4(vec3.create(), shape.t[beta], norM);
         let n = vec3.transformMat4(vec3.create(), shape.n[beta], norM);
         let b = vec3.transformMat4(vec3.create(), shape.b[beta], norM);
-        // THIS IM NOT REALLY SURE THAT IT WORKS, LETS GET IT WORKING ON OTHER SURFACES FIRST.
-        // COVERS ALSO NOT YET.
         let u = alfa / this.levels;
         let v = beta / this.cols;
         return {p, t, n, b, u, v};
     }
 
     draw(gl: WebGL): void {
-        gl.draw(this.position, this.index, this.normal);
+        gl.draw(this);
         if (this.useCovers) {
             let covers = this.getCovers();
             [covers.top, covers.bottom].forEach((c) => {
-                gl.draw(c.p, c.idx, c.n, DrawMethod.Fan);
+                gl.draw({
+                    position: c.p,
+                    normal: c.n,
+                    index: c.idx,
+                    binormal: c.b,
+                    tangent: c.tangent,
+                    uv: c.uv
+                }, 
+                DrawMethod.Fan);
             })
         }
     }

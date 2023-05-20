@@ -3,6 +3,7 @@ const vertexShaderPath = "dist/shaders/vertex.glsl";
 const fragmentShaderPath = "dist/shaders/fragment.glsl";
 export class WebGL {
   constructor(canvas) {
+    this.useTexture = false;
     this.normalColoring = false;
     this.showLines = false;
     this.showSurface = true;
@@ -26,12 +27,27 @@ export class WebGL {
     this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
   }
   async init(vertexShader = vertexShaderPath, fragmentShader = fragmentShaderPath) {
+    let texture = await this.loadTexture("../assets/uv.jpg");
     await this.setUpShaders(vertexShader, fragmentShader);
     this.setUpMatrices();
     this.cleanGL();
     this.setColor(this.color);
     this.setNormalColoring(this.normalColoring);
+    this.setTexture(texture);
     return this;
+  }
+  async loadTexture(file) {
+    let gl = this.gl;
+    let image = await loadImage(file);
+    let texture = gl.createTexture();
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    return texture;
   }
   setUpMatrices() {
     mat4.perspective(this.projMatrix, 45, this.canvas.width / this.canvas.height, 0.1, 100);
@@ -60,7 +76,7 @@ export class WebGL {
     }
     this.gl.useProgram(this.program);
   }
-  draw(vertex, index, normals, method = this.method) {
+  drawLines(vertex, index, normals, method = this.method) {
     this.setMatrixUniforms();
     const vertexBuffer = this.createBuffer(vertex);
     const normalBuffer = this.createBuffer(normals);
@@ -76,7 +92,7 @@ export class WebGL {
       this.setDrawColor(this.color);
     }
   }
-  drawGeometry(geometry, method = this.method) {
+  draw(geometry, method = this.method) {
     this.setMatrixUniforms();
     const vertexBuffer = this.createBuffer(geometry.position);
     const normalBuffer = this.createBuffer(geometry.normal);
@@ -104,7 +120,7 @@ export class WebGL {
     }
   }
   drawLine(p1, p2, normals = [0, 0, 0, 0, 0, 0]) {
-    this.draw([...p1, ...p2], [0, 1], normals, DrawMethod.Lines);
+    this.drawLines([...p1, ...p2], [0, 1], normals, DrawMethod.Lines);
   }
   createBuffer(array) {
     const buffer = this.gl.createBuffer();
@@ -140,6 +156,17 @@ export class WebGL {
     this.normalColoring = bool;
     const normalColoringUniform = this.gl.getUniformLocation(this.program, "normalColoring");
     this.gl.uniform1i(normalColoringUniform, Number(bool));
+    return this;
+  }
+  setTexture(texture) {
+    this.gl.uniform1i(this.gl.getUniformLocation(this.program, "texture"), 0);
+    this.gl.activeTexture(this.gl.TEXTURE0);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+  }
+  setUseTexture(bool) {
+    this.useTexture = bool;
+    const useTextureUniform = this.gl.getUniformLocation(this.program, "useTexture");
+    this.gl.uniform1i(useTextureUniform, Number(bool));
     return this;
   }
   setView(view) {
@@ -189,3 +216,16 @@ export var DrawMethod;
   DrawMethod2[DrawMethod2["Fan"] = WebGLRenderingContext.TRIANGLE_FAN] = "Fan";
   DrawMethod2[DrawMethod2["Lines"] = WebGLRenderingContext.LINES] = "Lines";
 })(DrawMethod || (DrawMethod = {}));
+export function loadImage(path) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = path;
+    img.onload = () => {
+      resolve(img);
+    };
+    img.onerror = (e) => {
+      reject(e);
+    };
+  });
+}
+;

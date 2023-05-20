@@ -30,34 +30,64 @@ export class SweepSurface {
     return this.covers;
   }
   topCover(invertNormals = false) {
-    let cover = {p: [], n: [], idx: []};
+    let cover = {p: [], n: [], b: [], t: [], uv: [], idx: []};
     let center = this.sweep.getPath().getPointData(1);
     cover.p.push(...center.p);
     cover.n.push(...invertNormals == true ? negateVec(center.t) : center.t);
     let shape = this.discretizedShape;
+    let global_uv = [];
     for (let i = 0; i < shape.p.length; i++) {
       let point = this.getPointData(this.levels, i);
       cover.p.push(...point.p);
       cover.n.push(...invertNormals == true ? negateVec(point.t) : point.t);
+      cover.t.push(...point.t);
+      cover.b.push(...point.b);
+      let u = point.p[0];
+      let v = point.p[1];
+      global_uv.push([u, v]);
     }
     let n_points = cover.p.length / 3;
     cover.idx.push(...Array(n_points).keys());
-    return {p: cover.p, n: cover.n, idx: cover.idx};
+    let u_arr = global_uv.map((uv) => uv[0]);
+    let v_arr = global_uv.map((uv) => uv[1]);
+    let max_u = Math.max(...u_arr, Math.abs(Math.min(...u_arr)));
+    let max_v = Math.max(...v_arr, Math.abs(Math.min(...v_arr)));
+    for (let i = 0; i < n_points; i++) {
+      let u = u_arr[i] / max_u;
+      let v = v_arr[i] / max_v;
+      cover.uv.push(this.uvFactors[0] * u, this.uvFactors[1] * v);
+    }
+    return {p: cover.p, n: cover.n, t: cover.t, b: cover.b, uv: cover.uv, idx: cover.idx};
   }
   bottomCover(invertNormals = false) {
-    let cover = {p: [], n: [], idx: []};
+    let cover = {p: [], n: [], b: [], t: [], uv: [], idx: []};
     let center = this.sweep.getPath().getPointData(0);
     cover.p.push(...center.p);
     cover.n.push(...invertNormals == true ? negateVec(center.t) : center.t);
     let shape = this.discretizedShape;
+    let global_uv = [];
     for (let i = 0; i < shape.p.length; i++) {
       let point = this.getPointData(0, i);
       cover.p.push(...point.p);
       cover.n.push(...invertNormals == true ? negateVec(point.t) : point.t);
+      cover.t.push(...point.t);
+      cover.b.push(...point.b);
+      let u = point.p[0];
+      let v = point.p[1];
+      global_uv.push([u, v]);
     }
     let n_points = cover.p.length / 3;
     cover.idx.push(...Array(n_points).keys());
-    return {p: cover.p, n: cover.n, idx: cover.idx};
+    let u_arr = global_uv.map((uv) => uv[0]);
+    let v_arr = global_uv.map((uv) => uv[1]);
+    let max_u = Math.max(...u_arr, Math.abs(Math.min(...u_arr)));
+    let max_v = Math.max(...v_arr, Math.abs(Math.min(...v_arr)));
+    for (let i = 0; i < n_points; i++) {
+      let u = u_arr[i] / max_u;
+      let v = v_arr[i] / max_v;
+      cover.uv.push(this.uvFactors[0] * u, this.uvFactors[1] * v);
+    }
+    return {p: cover.p, n: cover.n, t: cover.t, b: cover.b, uv: cover.uv, idx: cover.idx};
   }
   buildSweepableBuffers() {
     let points = [];
@@ -96,11 +126,18 @@ export class SweepSurface {
     return {p, t, n, b, u, v};
   }
   draw(gl) {
-    gl.draw(this.position, this.index, this.normal);
+    gl.draw(this);
     if (this.useCovers) {
       let covers = this.getCovers();
       [covers.top, covers.bottom].forEach((c) => {
-        gl.draw(c.p, c.idx, c.n, DrawMethod.Fan);
+        gl.draw({
+          position: c.p,
+          normal: c.n,
+          index: c.idx,
+          binormal: c.b,
+          tangent: c.tangent,
+          uv: c.uv
+        }, DrawMethod.Fan);
       });
     }
   }

@@ -19,6 +19,7 @@ export class WebGL {
 
     public color: number[];
 
+    public useTexture: boolean = false;
     public normalColoring: boolean = false;
     public showLines: boolean = false;
     public showSurface: boolean = true;
@@ -47,12 +48,31 @@ export class WebGL {
     };
 
     async init(vertexShader = vertexShaderPath, fragmentShader = fragmentShaderPath) {
+        let texture = await this.loadTexture("../assets/uv.jpg")
         await this.setUpShaders(vertexShader, fragmentShader);
         this.setUpMatrices();
         this.cleanGL();
         this.setColor(this.color);
         this.setNormalColoring(this.normalColoring);
+        this.setTexture(texture)
         return this;
+    }
+
+    async loadTexture(file: string){
+        let gl: WebGLRenderingContext =  this.gl;
+        let image: HTMLImageElement = await loadImage(file);
+        let texture: WebGLTexture = gl.createTexture()!;
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); 					// invierto el ejeY					
+        gl.bindTexture(gl.TEXTURE_2D, texture); 						// activo la textura
+            
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);	// cargo el bitmap en la GPU
+            
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);					// selecciono filtro de magnificacion
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);	// selecciono filtro de minificacion
+            
+        gl.generateMipmap(gl.TEXTURE_2D);		// genero los mipmaps
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        return texture;
     }
 
     setUpMatrices() {
@@ -91,7 +111,7 @@ export class WebGL {
         this.gl.useProgram(this.program);
     }
 
-    draw(vertex: Array<number>, index: Array<number>, normals: Array<number>, method: DrawMethod = this.method) {
+    drawLines(vertex: Array<number>, index: Array<number>, normals: Array<number>, method: DrawMethod = this.method) {
         this.setMatrixUniforms();
         const vertexBuffer = this.createBuffer(vertex);
         const normalBuffer = this.createBuffer(normals);
@@ -108,7 +128,7 @@ export class WebGL {
         }
     }
 
-    drawGeometry(geometry: Geometry, method: DrawMethod =  this.method) {
+    draw(geometry: any, method: DrawMethod =  this.method) {
         this.setMatrixUniforms();
         const vertexBuffer = this.createBuffer(geometry.position);
         const normalBuffer = this.createBuffer(geometry.normal);
@@ -119,8 +139,6 @@ export class WebGL {
 
         this.setAttribute(vertexBuffer, 3 , "aVertexPosition");
         this.setAttribute(normalBuffer, 3 , "aVertexNormal");
-
-        // THESE THREE ARE SAYING INVALID_VALUE, INDEX OUT OF RANGE. TODO.
         this.setAttribute(binormalBuffer, 3 , "aVertexBinormal");
         this.setAttribute(tangentBuffer, 3 , "aVertexTangent");
         this.setAttribute(uvBuffer, 2 , "aVertexUV");
@@ -142,7 +160,7 @@ export class WebGL {
     }
 
     drawLine(p1: vec3, p2: vec3, normals: number[] = [0,0,0,0,0,0]) {
-        this.draw([...p1, ...p2], [0,1], normals, DrawMethod.Lines);    
+        this.drawLines([...p1, ...p2], [0,1], normals, DrawMethod.Lines);    
     }
 
     // Utility Methods
@@ -195,7 +213,23 @@ export class WebGL {
         );
         this.gl.uniform1i(normalColoringUniform, Number(bool));
         return this;
-      }
+    }
+
+    setTexture(texture: WebGLTexture) {
+        this.gl.uniform1i(this.gl.getUniformLocation(this.program, "texture"), 0);
+        this.gl.activeTexture(this.gl.TEXTURE0);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+    }
+
+    setUseTexture(bool: boolean) {
+        this.useTexture = bool;
+        const useTextureUniform = this.gl.getUniformLocation(
+          this.program,
+          "useTexture"
+        );
+        this.gl.uniform1i(useTextureUniform, Number(bool));
+        return this;
+    }
 
     setView(view: mat4) {
         this.viewMatrix = view;
@@ -253,4 +287,17 @@ export enum DrawMethod {
     Lines = WebGLRenderingContext.LINES
 }
 
+
+export function loadImage(path: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = path;
+      img.onload = () => {
+        resolve(img);
+      };
+      img.onerror = (e) => {
+        reject(e);
+      };
+    });
+  };
 

@@ -24,7 +24,8 @@ function tick() {
 }
 
 let sweep =  new Object3D(new Bottle(1,2.5), [Transformation.scale([0.5,0.5,0.5])], [0.5,1,0.2]);
-gl.setNormalColoring(true);
+gl.setNormalColoring(false);
+sweep.useTexture = true;
 tick();
 
 

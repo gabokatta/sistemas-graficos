@@ -66,7 +66,7 @@ export class Sphere implements Geometry {
   
 
     draw(gl: WebGL): void {
-      gl.drawGeometry(this);
+      gl.draw(this);
     }
 
 };

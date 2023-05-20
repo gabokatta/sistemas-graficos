@@ -47,7 +47,7 @@ var sonTransforms = [
 ];
 var cylinderSon = new Object3D(new Cylinder(1, 3), sonTransforms, []);
 var cylinderSon2 = new Object3D(new Cylinder(1, 3), son2Transforms, []);
-var cylinder = new Object3D(new Cylinder(1, 3), [], []);
+var cylinder = new Object3D(new Cylinder(1, 4), [], [1, 1, 1]);
 cylinder.setChildren([cylinderSon, cylinderSon2]);
 gl.setNormalColoring(true);
 tick();

@@ -6,9 +6,14 @@ export class Object3D {
     transform: mat4;
     transformations: Transformation[] = [];
     children: Object3D[];
+
+
     geometry: Geometry;
+
     drawableNormals: vec3[] = [];
     showNormals: boolean = false;
+
+    useTexture: boolean = false;
     color: any;
   
     constructor(geometry: Geometry, transformations: Transformation[], color: any) {
@@ -30,7 +35,16 @@ export class Object3D {
       if (this.geometry) {
         gl.setModel(m);
         gl.setColor(this.color);
-        this.geometry.draw(gl);
+
+        if (this.useTexture) {
+          gl.setUseTexture(true);
+          this.geometry.draw(gl);
+          gl.setUseTexture(false);
+        }
+        else { 
+          this.geometry.draw(gl);
+        }
+       
         if (this.showNormals) {
           let normals = this.drawableNormals.length == 0 ? getDrawableNormals(this.geometry) : this.drawableNormals;
           gl.drawObjectNormals(normals);

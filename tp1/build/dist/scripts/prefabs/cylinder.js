@@ -49,9 +49,16 @@ export class Cylinder {
     this.covers.push(fillTop(this), fillBottom(this));
   }
   draw(gl) {
-    gl.drawGeometry(this);
+    gl.draw(this);
     this.covers.forEach((c) => {
-      gl.draw(c.position, c.index, c.normal, DrawMethod.Fan);
+      gl.draw({
+        position: c.position,
+        index: c.index,
+        normal: c.normal,
+        binormal: c.binormal,
+        tangent: c.tangent,
+        uv: c.uv
+      }, DrawMethod.Fan);
     });
   }
 }
@@ -61,7 +68,7 @@ function fillBottom(cylinder) {
   const n = [0, 0, 2 * v - 1];
   const t = [1, 0, 0];
   const b = [0, 2 * v - 1, 0];
-  let points = [...[0, 0, v - 0.5]];
+  let points = [...[0, 0, v - cylinder.height / 2]];
   let normals = [...n];
   let tangents = [...t];
   let biNormals = [...b];
@@ -90,7 +97,7 @@ function fillTop(cylinder) {
   const n = [0, 0, 2 * v - 1];
   const t = [1, 0, 0];
   const b = [0, 2 * v - 1, 0];
-  let points = [...[0, 0, v - 0.5]];
+  let points = [...[0, 0, v + cylinder.height / 2 - 1]];
   let normals = [...n];
   let tangents = [...t];
   let biNormals = [...b];

@@ -46,7 +46,7 @@ export class Sphere {
     return {p, n: vec3.normalize(vec3.create(), vec3.fromValues(p[0], p[1], p[2])), u: alfa, v: beta, t, b};
   }
   draw(gl) {
-    gl.drawGeometry(this);
+    gl.draw(this);
   }
 }
 ;
