@@ -26,23 +26,23 @@ export class Drone implements Camera {
         this.position = position;
         this.direction = direction;
         this.keyDownListener = document.addEventListener("keydown", (e: KeyboardEvent) => {
-            const vel = 1;
+            const velocity = 1;
             switch (e.key) {
                 case "ArrowUp":
                 case "w":
-                    this.state.fwd = vel;
+                    this.state.fwd = velocity;
                     break;
                 case "ArrowDown":
                 case "s":
-                    this.state.fwd = -vel;
+                    this.state.fwd = -velocity;
                     break;
                 case "ArrowLeft":
                 case "a":
-                    this.state.right = -vel;
+                    this.state.right = -velocity;
                     break;
                 case "ArrowRight":
                 case "d":
-                    this.state.right = vel;
+                    this.state.right = velocity;
         }
         });
         this.keyUpListener = document.addEventListener("keyup", (e: KeyboardEvent) => {
@@ -71,15 +71,13 @@ export class Drone implements Camera {
             this.state.du = linearInterpolation(this.state.du, movementX, amount);
             this.state.dv = linearInterpolation(this.state.dv, movementY, amount);
         });
-
-        gl.canvas.requestPointerLock();
     }
 
     updateDirection() {
-        const velFactor = 0.01;
+        const velocityFactor = 0.01;
         const { du, dv } = this.state;
-        this.state.u += du * velFactor;
-        this.state.v += dv * velFactor;
+        this.state.u += du * velocityFactor;
+        this.state.v += dv * velocityFactor;
 
         if (this.state.v > 1) this.state.v = 1;
         if (this.state.v < -0.5) this.state.v = -0.5;
@@ -101,22 +99,20 @@ export class Drone implements Camera {
 
     updatePostion() {
         const { fwd, right } = this.state;
-        const velFactor = 0.1;
+        const velocityFactor = 0.1;
 
         let forwardVec = vec3.normalize(vec3.create(), this.direction);
         let rightVec = vec3.cross(vec3.create(), this.direction, this.up);
         vec3.normalize(rightVec, rightVec);
 
-        vec3.scale(forwardVec, forwardVec, fwd *velFactor)
-        vec3.scale(rightVec, rightVec, right * velFactor);
+        vec3.scale(forwardVec, forwardVec, fwd *velocityFactor)
+        vec3.scale(rightVec, rightVec, right * velocityFactor);
 
         vec3.add(this.position, this.position, forwardVec);
         vec3.add(this.position, this.position, rightVec);
     }
 
     update(gl: WebGL): void {
-        console.log("uv", this.state.u, this.state.v)
-        console.log("dudv", this.state.du, this.state.dv)
         this.updateDirection();
         this.updatePostion();
         gl.setView(this.getViewMatrix());
