@@ -16,6 +16,8 @@
 - <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build/demos/cylinder.html">TP1 - DEMO CILINDRO</a>
 - <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build/demos/sweep.html">TP1 - DEMO BARRIDO</a>
 - <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build/demos/revolution.html">TP1 - DEMO REVOLUCION</a>
+- <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build/demos/drone.html">TP1 - DEMO DRONE CAMARA</a>
+- <a href="https://gabokatta.github.io/sistemas-graficos/tp1/build/demos/orbital.html">TP1 - ORBITAL CAMARA</a>
 
 
 ## Bibliografía
