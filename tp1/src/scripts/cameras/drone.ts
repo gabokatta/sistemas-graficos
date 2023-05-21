@@ -1,7 +1,7 @@
 import { mat4, vec3 } from "gl-matrix";
 import type { Camera } from "./camera";
-import { CameraState, DroneState } from "./state";
 import type { WebGL } from "../webgl";
+import { DroneState } from "./state";
 
 export class Drone implements Camera {
     initialPosition: vec3;

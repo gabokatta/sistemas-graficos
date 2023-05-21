@@ -1,8 +1,6 @@
 
 export interface CameraState {
-
     initial(): CameraState;
-
 }
 
 export class OrbitalState implements CameraState {

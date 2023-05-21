@@ -20,9 +20,9 @@ export class Orbital {
     this.mouseWheelListener = gl.canvas.addEventListener("wheel", (e) => {
       const z_vel = 0.08;
       if (e.deltaY > 0) {
-        this.state.z += z_vel;
+        this.state.z += z_vel * 2;
       } else
-        this.state.z -= z_vel;
+        this.state.z -= z_vel * 2;
     });
     this.mouseMoveListener = gl.canvas.addEventListener("mousemove", (e) => {
       const {movementX, movementY} = e;
@@ -36,7 +36,7 @@ export class Orbital {
   update(gl) {
     gl.setView(this.getViewMatrix());
     let {du, dv, dz} = this.state;
-    let friction = 0.05;
+    let friction = 0.01;
     this.state.u += du * friction;
     this.state.v += dv * friction;
     if (this.state.v > 1)
