@@ -34,7 +34,6 @@ export class Orbital {
     });
   }
   update(gl) {
-    console.log(this.state.u, this.state.v, this.state.z);
     gl.setView(this.getViewMatrix());
     let {du, dv, dz} = this.state;
     let friction = 0.05;
