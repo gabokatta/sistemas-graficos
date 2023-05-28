@@ -54,6 +54,9 @@ export class Drone {
       this.state.dv = linearInterpolation(this.state.dv, movementY, amount);
     });
   }
+  lookAt(position) {
+    throw new Error("Method not implemented.");
+  }
   updateDirection() {
     const velocityFactor = 0.01;
     const {du, dv} = this.state;

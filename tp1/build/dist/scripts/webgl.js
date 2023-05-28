@@ -124,6 +124,7 @@ export class WebGL {
   }
   setDrawMethod(method) {
     this.method = method;
+    return this;
   }
   setAttribute(buffer, size, name) {
     const attributeLocation = this.gl.getAttribLocation(this.program, name);
@@ -134,6 +135,7 @@ export class WebGL {
   setColor(color) {
     this.color = color;
     this.setDrawColor(this.color);
+    return this;
   }
   setDrawColor(color) {
     const modelColor = color.length == 0 ? [1, 0, 1] : color;
@@ -144,6 +146,14 @@ export class WebGL {
     this.normalColoring = bool;
     const normalColoringUniform = this.gl.getUniformLocation(this.program, "normalColoring");
     this.gl.uniform1i(normalColoringUniform, Number(bool));
+    return this;
+  }
+  setShowLines(bool) {
+    this.showLines = bool;
+    return this;
+  }
+  setShowSurfaces(bool) {
+    this.showSurface = bool;
     return this;
   }
   setTexture(texture) {

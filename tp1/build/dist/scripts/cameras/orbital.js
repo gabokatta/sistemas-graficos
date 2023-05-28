@@ -2,13 +2,15 @@ import {mat4, vec3} from "../../../snowpack/pkg/gl-matrix.js";
 import {OrbitalState} from "./state.js";
 export class Orbital {
   constructor(gl, center = [0, 0, 0]) {
-    this.offset = [0, 2, 20];
+    this.offset = [0, 2, 10];
     this.up = [0, 1, 0];
     this.side = [1, 0, 0];
     this.state = new OrbitalState();
     this.isMouseDown = false;
     this.center = center;
     this.position = vec3.add(vec3.create(), center, this.offset);
+    this.state.y = this.offset[1];
+    this.state.z = this.offset[2];
     this.mouseDownListener = document.addEventListener("mousedown", (e) => {
       this.isMouseDown = true;
     });
@@ -32,6 +34,9 @@ export class Orbital {
         this.state.dv = linearInterpolation(this.state.dv, movementY, amount);
       }
     });
+  }
+  lookAt(position) {
+    this.center = position;
   }
   update(gl) {
     gl.setView(this.getViewMatrix());
