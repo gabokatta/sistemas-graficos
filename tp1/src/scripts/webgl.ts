@@ -169,6 +169,7 @@ export class WebGL {
 
     setDrawMethod(method: DrawMethod) {
         this.method = method;
+        return this;
     }
 
     setAttribute(buffer: WebGLBuffer, size: number, name: string) {
@@ -181,6 +182,7 @@ export class WebGL {
     setColor(color: number[]) {
         this.color = color;
         this.setDrawColor(this.color);
+        return this;
       }
 
     setDrawColor(color: number[]) {
@@ -200,6 +202,16 @@ export class WebGL {
           "normalColoring"
         );
         this.gl.uniform1i(normalColoringUniform, Number(bool));
+        return this;
+    }
+
+    setShowLines(bool: boolean) {
+        this.showLines = bool;
+        return this;
+    }
+
+    setShowSurfaces(bool: boolean) {
+        this.showSurface = bool;
         return this;
     }
 

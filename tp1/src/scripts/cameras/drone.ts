@@ -72,6 +72,9 @@ export class Drone implements Camera {
             this.state.dv = linearInterpolation(this.state.dv, movementY, amount);
         });
     }
+    lookAt(position: vec3) {
+        throw new Error("Method not implemented.");
+    }
 
     updateDirection() {
         const velocityFactor = 0.01;
