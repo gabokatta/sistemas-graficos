@@ -8,7 +8,7 @@ var params = new Parameters();
 var canvas = document.getElementById("my-canvas");
 var gl = await new WebGL(canvas).init(vertexShaderPath, fragmentShaderPath);
 params.gl = gl;
-gl.setNormalColoring(params.normalColoring).setShowSurfaces(true).setShowLines(false);
+gl.setNormalColoring(params.normalColoring).setShowSurfaces(true).setShowLines(params.drawLines);
 params.gl = gl;
 initCamera();
 let boat = Boat.build();
