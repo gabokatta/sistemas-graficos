@@ -14,5 +14,8 @@ export class Parameters {
     public cameraMode: CameraMode = CameraMode.SCENE;
 
 
-    public boatPosition: vec3 = [5,0,0];
+    public boat: any = {
+        position: [5,0,0],
+        raftColor: [217,33,32]
+    }
 }

@@ -5,6 +5,9 @@ export class Parameters {
     this.drawLines = true;
     this.normalColoring = false;
     this.cameraMode = CameraMode.SCENE;
-    this.boatPosition = [5, 0, 0];
+    this.boat = {
+      position: [5, 0, 0],
+      raftColor: [217, 33, 32]
+    };
   }
 }

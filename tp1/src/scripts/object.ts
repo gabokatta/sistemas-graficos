@@ -7,8 +7,7 @@ export class Object3D {
     transformations: Transformation[] = [];
     children: Object3D[];
 
-
-    geometry: Geometry;
+    geometry: any;
 
     drawableNormals: vec3[] = [];
     showNormals: boolean = false;
@@ -16,7 +15,7 @@ export class Object3D {
     useTexture: boolean = false;
     color: any;
   
-    constructor(geometry: Geometry, transformations: Transformation[], color: any) {
+    constructor(geometry: any, transformations: Transformation[], color: any) {
       this.transform = mat4.create();
       this.transformations = transformations.reverse();
 

@@ -23,7 +23,7 @@ function changeCamera(mode) {
       params.gl.canvas.requestPointerLock();
       break;
     case 2:
-      params.camera = new Orbital(params.gl, params.boatPosition);
+      params.camera = new Orbital(params.gl, params.boat.position);
     default:
       params.camera = new Orbital(params.gl);
       break;
@@ -47,7 +47,7 @@ export function updateCamera(gl) {
     changeCamera(params.cameraMode);
   }
   if (params.cameraMode == 2) {
-    params.camera.lookAt(params.boatPosition);
+    params.camera.lookAt(params.boat.position);
   }
   params.camera.update(gl);
 }
