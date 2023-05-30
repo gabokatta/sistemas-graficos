@@ -78,7 +78,7 @@ export class Drone {
   }
   updatePostion() {
     const {fwd, right} = this.state;
-    const velocityFactor = 0.1;
+    const velocityFactor = 0.3;
     let forwardVec = vec3.normalize(vec3.create(), this.direction);
     let rightVec = vec3.cross(vec3.create(), this.direction, this.up);
     vec3.normalize(rightVec, rightVec);

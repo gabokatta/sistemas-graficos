@@ -3,6 +3,7 @@ import {Parameters} from "./parameters.js";
 import {initCamera, updateCamera} from "./camera.js";
 import {Boat} from "./components/boat.js";
 import {Tree} from "./components/tree.js";
+import {Bridge} from "./components/bridge.js";
 const vertexShaderPath = "../dist/shaders/vertex.glsl";
 const fragmentShaderPath = "../dist/shaders/fragment.glsl";
 var params = new Parameters();
@@ -14,10 +15,12 @@ params.gl = gl;
 initCamera();
 let boat = Boat.build();
 let tree = Tree.build();
+let bridge = Bridge.build();
 function tick() {
   requestAnimationFrame(tick);
   boat.draw(gl);
   tree.draw(gl);
+  bridge.draw(gl);
   updateCamera(gl);
 }
 tick();

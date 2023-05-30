@@ -44,5 +44,11 @@ export class Parameters {
       leafColor: [143 / 255, 206 / 255, 0 / 255],
       trunkColor: [139 / 255, 69 / 255, 19 / 255]
     };
+    this.bridge = {
+      roadColor: [211 / 255, 211 / 255, 211 / 255],
+      towerColor: [],
+      ropeColor: [],
+      tensorColor: []
+    };
   }
 }

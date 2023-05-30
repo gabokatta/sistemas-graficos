@@ -29,8 +29,6 @@ function changeCamera(mode: CameraMode) {
             params.camera = new Drone(params.gl!, [0, 3, 10]);
             params.gl!.canvas.requestPointerLock();
             break;
-        case CameraMode.BOAT:
-            params.camera = new Orbital(params.gl!, params.boat.position);
         default:
             params.camera = new Orbital(params.gl!)
             break;
@@ -58,7 +56,7 @@ export function updateCamera(gl: WebGL) {
         changeCamera(params.cameraMode);
     }
     if (params.cameraMode == CameraMode.BOAT){
-        params.camera!.lookAt(params.boat.position);
+        params.camera!.lookAt([-20,10,-20]);
     }
     params.camera!.update(gl);
 }
