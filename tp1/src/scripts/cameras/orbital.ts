@@ -7,7 +7,7 @@ export class Orbital implements Camera {
 
     center: vec3;
     position: vec3;
-    offset: vec3 = [0, 2, 10];
+    offset: vec3 = [0, 2, 30];
 
     up: vec3 = [0,1,0];
     side: vec3 = [1,0,0];

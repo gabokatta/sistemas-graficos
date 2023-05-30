@@ -17,13 +17,13 @@ function tick() {
 }
 
 let sweep =  new Object3D(new Bottle(1,2.5), [
-    Transformation.scale([0.4,0.4,0.4]),
+    Transformation.scale([0.8,0.8,0.8]),
     Transformation.translate([0, -2, 0])
 ], 
 [1,1,1]);
 
 let sweep2 =  new Object3D(new Bottle(1,2.5), [
-    Transformation.scale([0.1,0.1,0.1]),
+    Transformation.scale([0.4,0.4,0.4]),
     Transformation.translate([5, -2, 0])
 ], 
 [1,1,1]);

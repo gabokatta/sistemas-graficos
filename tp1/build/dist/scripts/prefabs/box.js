@@ -4,11 +4,11 @@ import {Bezier} from "../curves/bezier.js";
 import {CurveLevel} from "../curves/curve.js";
 import {BSpline} from "../curves/bspline.js";
 export class Box extends SweepSurface {
-  constructor(width, height = width) {
+  constructor(width, height = width, depth = 3) {
     let path = new Bezier([
-      [0, -width / 2, 0],
+      [0, -depth / 2, 0],
       [0, 0, 0],
-      [0, height / 2, 0]
+      [0, depth / 2, 0]
     ], CurveLevel.CUADRATIC);
     let shape = BSpline.straightLines([
       [-width / 2, -height / 2, 0],

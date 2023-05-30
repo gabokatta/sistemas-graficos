@@ -1,6 +1,7 @@
 import {mat4, vec3} from "../../../snowpack/pkg/gl-matrix.js";
 import {buildIndex} from "../geometry.js";
 import {DrawMethod} from "../webgl.js";
+import {Revolution} from "./revolution.js";
 export class SweepSurface {
   constructor(sweep, levels = -1) {
     this.index = [];
@@ -15,6 +16,9 @@ export class SweepSurface {
     this.cols = 75;
     this.useCovers = true;
     this.covers = void 0;
+    if (sweep instanceof Revolution) {
+      this.useCovers = false;
+    }
     this.levels = levels <= -1 ? this.rows : levels;
     this.sweep = sweep;
     this.discretizedPath = this.sweep.discretizePath(1 / this.levels);

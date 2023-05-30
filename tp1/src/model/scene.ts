@@ -1,9 +1,8 @@
 import {WebGL } from "../scripts/webgl"
-import { Object3D, Transformation } from "../scripts/object";
-import { Bottle } from "../scripts/prefabs/bottle";
 import { Parameters } from "./parameters";
 import { initCamera, updateCamera } from "./camera";
 import { Boat } from "./components/boat";
+import { Tree } from "./components/tree";
 
 const vertexShaderPath = '../dist/shaders/vertex.glsl';
 const fragmentShaderPath = '../dist/shaders/fragment.glsl';
@@ -15,18 +14,21 @@ var gl =  await new WebGL(canvas).init(vertexShaderPath, fragmentShaderPath);
 params.gl = gl;
 
 gl.setNormalColoring(params.normalColoring)
+    .setUseTexture(false)
     .setShowSurfaces(true)
-    .setShowLines(params.drawLines);
+    .setShowLines(!params.drawLines);
 
 params.gl = gl;
 initCamera();
 
 let boat =  Boat.build();
+let tree =  Tree.build();
 
 
 function tick() {
     requestAnimationFrame(tick);
     boat.draw(gl);
+    tree.draw(gl);
     updateCamera(gl);
 }
 

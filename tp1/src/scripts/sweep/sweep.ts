@@ -2,6 +2,7 @@ import { mat4, vec3 } from "gl-matrix";
 import { buildIndex, Geometry } from "../geometry";
 import { DrawMethod, WebGL } from "../webgl";
 import type { Curve } from "../curves/curve";
+import { Revolution } from "./revolution";
 
 export class SweepSurface implements Geometry {
 
@@ -27,6 +28,11 @@ export class SweepSurface implements Geometry {
     discretizedShape: any;
 
     constructor(sweep: Sweepable, levels: number = -1) {
+
+        if (sweep instanceof Revolution) {
+            this.useCovers = false;
+        }
+
         this.levels = levels <= -1 ? this.rows : levels;
         this.sweep = sweep;
         this.discretizedPath = this.sweep.discretizePath(1 / (this.levels));

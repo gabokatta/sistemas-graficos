@@ -6,15 +6,17 @@ import { BSpline } from "../curves/bspline";
 
 export class Box extends SweepSurface {
 
-    constructor(width: number, height: number = width) {
+    constructor(width: number, height: number = width, depth: number = 3) {
         let path: Bezier =  new Bezier(
             [
-                [0, -width / 2 , 0],
+                [0, -depth / 2 , 0],
                 [0,0,0],
-                [0, height /2 , 0],
+                [0, depth /2 , 0],
             ],
             CurveLevel.CUADRATIC
         );
+
+
 
         let shape: BSpline =  BSpline.straightLines([
             [-width / 2, -height / 2, 0],
