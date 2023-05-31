@@ -1,4 +1,4 @@
-import {WebGL } from "../scripts/webgl"
+import { WebGL } from "../scripts/webgl"
 import { Parameters } from "./parameters";
 import { initCamera, updateCamera } from "./camera";
 import { Boat } from "./components/boat";
@@ -7,11 +7,13 @@ import { Bridge } from "./components/bridge";
 
 const vertexShaderPath = '../dist/shaders/vertex.glsl';
 const fragmentShaderPath = '../dist/shaders/fragment.glsl';
+const uvTexturePath = '../dist/assets/uv.jpg';
 
 var params =  new Parameters();
 var canvas = <HTMLCanvasElement> document.getElementById("my-canvas")!;
 
-var gl =  await new WebGL(canvas).init(vertexShaderPath, fragmentShaderPath);
+var gl =  await new WebGL(canvas).init();
+await gl.initTextures();
 params.gl = gl;
 
 gl.setNormalColoring(params.normalColoring)
@@ -28,11 +30,15 @@ let bridge = Bridge.build();
 
 function tick() {
     requestAnimationFrame(tick);
-    boat.draw(gl);
-    tree.draw(gl);
-    bridge.draw(gl);
+    drawScene()
     updateCamera(gl);
 }
 
+function drawScene() {
+    boat.draw(gl);
+    tree.draw(gl);
+    bridge.draw(gl);
+}
+
 tick();
-export {params};
+export {params, boat, tree, bridge};

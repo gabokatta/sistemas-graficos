@@ -6,9 +6,11 @@ import {Tree} from "./components/tree.js";
 import {Bridge} from "./components/bridge.js";
 const vertexShaderPath = "../dist/shaders/vertex.glsl";
 const fragmentShaderPath = "../dist/shaders/fragment.glsl";
+const uvTexturePath = "../dist/assets/uv.jpg";
 var params = new Parameters();
 var canvas = document.getElementById("my-canvas");
-var gl = await new WebGL(canvas).init(vertexShaderPath, fragmentShaderPath);
+var gl = await new WebGL(canvas).init();
+await gl.initTextures();
 params.gl = gl;
 gl.setNormalColoring(params.normalColoring).setUseTexture(false).setShowSurfaces(true).setShowLines(!params.drawLines);
 params.gl = gl;
@@ -18,10 +20,13 @@ let tree = Tree.build();
 let bridge = Bridge.build();
 function tick() {
   requestAnimationFrame(tick);
+  drawScene();
+  updateCamera(gl);
+}
+function drawScene() {
   boat.draw(gl);
   tree.draw(gl);
   bridge.draw(gl);
-  updateCamera(gl);
 }
 tick();
-export {params};
+export {params, boat, tree, bridge};

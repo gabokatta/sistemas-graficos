@@ -1,5 +1,5 @@
-import type { Camera } from "src/scripts/cameras/camera";
-import type { WebGL } from "src/scripts/webgl";
+import type { Camera } from "../scripts/cameras/camera";
+import type { WebGL } from "../scripts/webgl";
 import { CameraMode } from "./camera";
 
 export class Parameters {

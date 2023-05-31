@@ -5,9 +5,11 @@ import { Drone } from "../scripts/cameras/drone";
 
 const vertexShaderPath = '../dist/shaders/vertex.glsl';
 const fragmentShaderPath = '../dist/shaders/fragment.glsl';
+const uvTexturePath = '../dist/assets/uv.jpg';
 
 var canvas = <HTMLCanvasElement> document.getElementById("my-canvas")!;
 var gl =  await new WebGL(canvas).init(vertexShaderPath, fragmentShaderPath);
+await gl.initTextures([uvTexturePath]);
 let angle = 0;
 
 

@@ -4,9 +4,11 @@ import { Box } from "../scripts/prefabs/box";
 
 const vertexShaderPath = '../dist/shaders/vertex.glsl';
 const fragmentShaderPath = '../dist/shaders/fragment.glsl';
+const uvTexturePath = '../dist/assets/uv.jpg';
 
 var canvas = <HTMLCanvasElement> document.getElementById("my-canvas")!;
 var gl =  await new WebGL(canvas).init(vertexShaderPath, fragmentShaderPath);
+await gl.initTextures([uvTexturePath]);
 var angle = 0;
 var inverse = true;
 

@@ -1,8 +1,8 @@
 import { mat4 , vec3 } from "gl-matrix";
-import type { Geometry } from "./geometry";
 
 const vertexShaderPath = 'dist/shaders/vertex.glsl';
 const fragmentShaderPath = 'dist/shaders/fragment.glsl';
+const uvTexturePath = 'dist/assets/uv.jpg';
 
 export class WebGL {
 
@@ -48,13 +48,21 @@ export class WebGL {
     };
 
     async init(vertexShader = vertexShaderPath, fragmentShader = fragmentShaderPath) {
-        let texture = await this.loadTexture("../assets/uv.jpg")
+        
         await this.setUpShaders(vertexShader, fragmentShader);
         this.setUpMatrices();
         this.cleanGL();
         this.setColor(this.color);
         this.setNormalColoring(this.normalColoring);
-        this.setTexture(texture)
+        
+        return this;
+    }
+
+    async initTextures(texturePaths: string[] = [uvTexturePath]) {
+        for (let path of texturePaths) {
+            let texture = await this.loadTexture(path)
+            this.setTexture(texture)
+        }
         return this;
     }
 

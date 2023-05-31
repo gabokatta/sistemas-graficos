@@ -4,8 +4,10 @@ import {Bottle} from "../scripts/prefabs/bottle.js";
 import {Orbital} from "../scripts/cameras/orbital.js";
 const vertexShaderPath = "../dist/shaders/vertex.glsl";
 const fragmentShaderPath = "../dist/shaders/fragment.glsl";
+const uvTexturePath = "../dist/assets/uv.jpg";
 var canvas = document.getElementById("my-canvas");
 var gl = await new WebGL(canvas).init(vertexShaderPath, fragmentShaderPath);
+await gl.initTextures([uvTexturePath]);
 function tick() {
   requestAnimationFrame(tick);
   sweep.draw(gl);

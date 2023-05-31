@@ -1,6 +1,7 @@
 import {mat4, vec3} from "../../snowpack/pkg/gl-matrix.js";
 const vertexShaderPath = "dist/shaders/vertex.glsl";
 const fragmentShaderPath = "dist/shaders/fragment.glsl";
+const uvTexturePath = "dist/assets/uv.jpg";
 export class WebGL {
   constructor(canvas) {
     this.useTexture = false;
@@ -27,13 +28,18 @@ export class WebGL {
     this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
   }
   async init(vertexShader = vertexShaderPath, fragmentShader = fragmentShaderPath) {
-    let texture = await this.loadTexture("../assets/uv.jpg");
     await this.setUpShaders(vertexShader, fragmentShader);
     this.setUpMatrices();
     this.cleanGL();
     this.setColor(this.color);
     this.setNormalColoring(this.normalColoring);
-    this.setTexture(texture);
+    return this;
+  }
+  async initTextures(texturePaths = [uvTexturePath]) {
+    for (let path of texturePaths) {
+      let texture = await this.loadTexture(path);
+      this.setTexture(texture);
+    }
     return this;
   }
   async loadTexture(file) {
