@@ -56,7 +56,7 @@ export class WebGL {
     return texture;
   }
   setUpMatrices() {
-    mat4.perspective(this.projMatrix, 45, this.canvas.width / this.canvas.height, 0.1, 100);
+    mat4.perspective(this.projMatrix, 45, this.canvas.width / this.canvas.height, 0.1, 500);
     mat4.identity(this.viewMatrix);
     mat4.translate(this.viewMatrix, this.viewMatrix, [0, 0, -10]);
     this.setMatrixUniforms();
@@ -87,7 +87,7 @@ export class WebGL {
     const vertexBuffer = this.createBuffer(geometry.position);
     const normalBuffer = this.createBuffer(geometry.normal);
     const binormalBuffer = this.createBuffer(geometry.binormal);
-    const tangentBuffer = this.createBuffer(geometry.binormal);
+    const tangentBuffer = this.createBuffer(geometry.tangent);
     const uvBuffer = this.createBuffer(geometry.uv);
     const indexBuffer = this.createIndexBuffer(geometry.index);
     this.setAttribute(vertexBuffer, 3, "aVertexPosition");
@@ -99,7 +99,7 @@ export class WebGL {
     if (this.showSurface)
       this.gl.drawElements(method, geometry.index.length, this.gl.UNSIGNED_SHORT, 0);
     if (this.showLines) {
-      this.setDrawColor([0.4, 0.4, 0.4]);
+      this.setDrawColor([0.5, 0.5, 0.5]);
       this.gl.drawElements(this.gl.LINE_STRIP, geometry.index.length, this.gl.UNSIGNED_SHORT, 0);
       this.setDrawColor(this.color);
     }

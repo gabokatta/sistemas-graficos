@@ -6,7 +6,7 @@ export class Parameters {
     this.normalColoring = false;
     this.cameraMode = CameraMode.SCENE;
     this.boat = {
-      position: [4, 0, 0],
+      position: [5, 0, 0],
       raftColor: [217 / 255, 33 / 255, 32 / 255],
       spoilerColor: [1, 1, 1],
       boxPositions: [
@@ -44,10 +44,30 @@ export class Parameters {
       leafColor: [143 / 255, 206 / 255, 0 / 255],
       trunkColor: [139 / 255, 69 / 255, 19 / 255]
     };
+    this.bridgeLenght = 350;
+    this.towerOffset = this.bridgeLenght / 8;
+    this.ropesOffset = this.bridgeLenght / 5;
     this.bridge = {
-      roadColor: [211 / 255, 211 / 255, 211 / 255],
-      towerColor: [],
-      ropeColor: [],
+      values: {
+        length: this.bridgeLenght,
+        h1: 5,
+        h2: 80,
+        s1: 15
+      },
+      road: {
+        color: [211 / 255, 211 / 255, 211 / 255],
+        position: [0, 10, 0]
+      },
+      towers: {
+        positions: [
+          [-0.5, 0, this.bridgeLenght / 2 - this.towerOffset],
+          [-0.5, 0, this.bridgeLenght / 2 + this.towerOffset],
+          [-27.5, 0, this.bridgeLenght / 2 - this.towerOffset],
+          [-27.5, 0, this.bridgeLenght / 2 + this.towerOffset]
+        ],
+        color: [217 / 255, 33 / 255, 32 / 255]
+      },
+      ropeColor: [217 / 255, 33 / 255, 32 / 255],
       tensorColor: []
     };
   }

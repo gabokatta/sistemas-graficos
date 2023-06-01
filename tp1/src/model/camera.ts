@@ -56,7 +56,7 @@ export function updateCamera(gl: WebGL) {
         changeCamera(params.cameraMode);
     }
     if (params.cameraMode == CameraMode.BOAT){
-        params.camera!.lookAt([-20,10,-20]);
+        params.camera!.lookAt([0,40,-20]);
     }
     params.camera!.update(gl);
 }

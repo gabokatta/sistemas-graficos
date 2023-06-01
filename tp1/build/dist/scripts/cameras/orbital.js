@@ -20,7 +20,7 @@ export class Orbital {
       this.state.dv = 0;
     });
     this.mouseWheelListener = gl.canvas.addEventListener("wheel", (e) => {
-      const z_vel = 0.08;
+      const z_vel = 0.48;
       if (e.deltaY > 0) {
         this.state.z += z_vel * 2;
       } else

@@ -45,7 +45,7 @@ export function updateCamera(gl) {
     changeCamera(params.cameraMode);
   }
   if (params.cameraMode == 2) {
-    params.camera.lookAt([-20, 10, -20]);
+    params.camera.lookAt([0, 40, -20]);
   }
   params.camera.update(gl);
 }
