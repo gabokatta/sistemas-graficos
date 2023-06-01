@@ -50,9 +50,9 @@ export class Parameters {
     this.bridge = {
       values: {
         length: this.bridgeLenght,
-        h1: 5,
-        h2: 80,
-        s1: 15
+        h1: 15,
+        h2: 60,
+        s1: 10
       },
       road: {
         color: [211 / 255, 211 / 255, 211 / 255],

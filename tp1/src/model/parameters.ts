@@ -60,9 +60,9 @@ export class Parameters {
     public bridge: any = {
         values: {
             length: this.bridgeLenght,
-            h1: 5, // (5 - 25)
-            h2: 80, // (50, 80)
-            s1: 15
+            h1: 15, // (5 - 25)
+            h2: 60, // (50, 80)
+            s1: 10
         },
         road: {
             color: [211/255,211/255,211/255],
