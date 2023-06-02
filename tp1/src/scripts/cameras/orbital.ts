@@ -7,7 +7,7 @@ export class Orbital implements Camera {
 
     center: vec3;
     position: vec3;
-    offset: vec3 = [0, 2, 30];
+    offset: vec3;
 
     up: vec3 = [0,1,0];
     side: vec3 = [1,0,0];
@@ -20,8 +20,9 @@ export class Orbital implements Camera {
     mouseMoveListener: any;
     isMouseDown: boolean = false;
 
-    constructor(gl: WebGL, center: vec3 = [0,0,0])  {
+    constructor(gl: WebGL, center: vec3 = [0,0,0], offset: vec3 = [0, 2, 30])  {
         this.center = center;
+        this.offset = offset;
         this.position = vec3.add(vec3.create(), center, this.offset);
 
         this.state.y = this.offset[1];

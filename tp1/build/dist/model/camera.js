@@ -19,11 +19,14 @@ function changeCamera(mode) {
   params.camera?.clean();
   switch (mode) {
     case 1:
-      params.camera = new Drone(params.gl, [0, 3, 10]);
+      params.camera = new Drone(params.gl, [100, 10, 0]);
       params.gl.canvas.requestPointerLock();
       break;
-    default:
+    case 2:
       params.camera = new Orbital(params.gl);
+      break;
+    default:
+      params.camera = new Orbital(params.gl, [0, 0, 0], [0, 50, 200]);
       break;
   }
 }
@@ -45,7 +48,7 @@ export function updateCamera(gl) {
     changeCamera(params.cameraMode);
   }
   if (params.cameraMode == 2) {
-    params.camera.lookAt([0, 40, -20]);
+    params.camera.lookAt(params.boat.position);
   }
   params.camera.update(gl);
 }

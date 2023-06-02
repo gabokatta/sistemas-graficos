@@ -26,11 +26,14 @@ function changeCamera(mode: CameraMode) {
 
     switch (mode) {
         case CameraMode.DRONE:
-            params.camera = new Drone(params.gl!, [0, 3, 10]);
+            params.camera = new Drone(params.gl!, [100, 10, 0]);
             params.gl!.canvas.requestPointerLock();
             break;
-        default:
+        case CameraMode.BOAT:
             params.camera = new Orbital(params.gl!)
+            break;
+        default:
+            params.camera = new Orbital(params.gl!, [0,0,0], [0,50,200])
             break;
     }
 }
@@ -56,7 +59,7 @@ export function updateCamera(gl: WebGL) {
         changeCamera(params.cameraMode);
     }
     if (params.cameraMode == CameraMode.BOAT){
-        params.camera!.lookAt([0,40,-20]);
+        params.camera!.lookAt(params.boat.position);
     }
     params.camera!.update(gl);
 }

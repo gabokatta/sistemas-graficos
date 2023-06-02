@@ -33,15 +33,23 @@ export class Tree {
       Transformation.rotation(to_rads(90), [1, 0, 0])
     ], params.tree.trunkColor);
   }
-  static build(trunkLenght = 5) {
+  static getTree(trunkLength, pos) {
     let tree = new Object3D(void 0, [
-      Transformation.translate([5, 5, 5])
+      Transformation.translate(pos)
     ], []);
     tree.setChildren([
-      Tree.getTrunk(trunkLenght),
-      Tree.getLeaves(trunkLenght)
+      Tree.getTrunk(trunkLength),
+      Tree.getLeaves(trunkLength)
     ]);
     return tree;
+  }
+  static build(trunkLenght = 5) {
+    let trees = new Object3D(void 0, [], []);
+    trees.setChildren([
+      this.getTree(trunkLenght, [50, 10, 125]),
+      this.getTree(trunkLenght, [50, 10, -125])
+    ]);
+    return trees;
   }
 }
 function to_rads(angle) {

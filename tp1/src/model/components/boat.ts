@@ -87,6 +87,7 @@ export class Boat {
     static build(): Object3D {
         let boat =  new Object3D(undefined, [
             Transformation.rotation(to_rads(90), [1,0,0]),
+            Transformation.rotation(to_rads(90), [0,-1,0]),
             Transformation.translate(params.boat.position)
         ], []);
         boat.setChildren([

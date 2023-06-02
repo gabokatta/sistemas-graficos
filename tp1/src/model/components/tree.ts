@@ -41,15 +41,24 @@ export class Tree {
         ], params.tree.trunkColor)
     }
 
-    static build(trunkLenght: number = 5) {
+    private static getTree(trunkLength: number, pos: number[]) {
         let tree =  new Object3D(undefined, [
-            Transformation.translate([5,5,5])
+            Transformation.translate(pos)
         ], []);
         tree.setChildren([
-            Tree.getTrunk(trunkLenght),
-            Tree.getLeaves(trunkLenght)
+            Tree.getTrunk(trunkLength),
+            Tree.getLeaves(trunkLength)
         ])
         return tree;
+    }
+
+    static build(trunkLenght: number = 5) {
+        let trees =  new Object3D(undefined, [], []);
+        trees.setChildren([
+            this.getTree(trunkLenght, [50,10,125]),
+            this.getTree(trunkLenght, [50,10,-125]),
+        ])
+        return trees;
     }
 
 

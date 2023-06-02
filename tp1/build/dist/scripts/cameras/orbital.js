@@ -1,13 +1,13 @@
 import {mat4, vec3} from "../../../snowpack/pkg/gl-matrix.js";
 import {OrbitalState} from "./state.js";
 export class Orbital {
-  constructor(gl, center = [0, 0, 0]) {
-    this.offset = [0, 2, 30];
+  constructor(gl, center = [0, 0, 0], offset = [0, 2, 30]) {
     this.up = [0, 1, 0];
     this.side = [1, 0, 0];
     this.state = new OrbitalState();
     this.isMouseDown = false;
     this.center = center;
+    this.offset = offset;
     this.position = vec3.add(vec3.create(), center, this.offset);
     this.state.y = this.offset[1];
     this.state.z = this.offset[2];

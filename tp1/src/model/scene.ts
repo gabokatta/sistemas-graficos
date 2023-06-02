@@ -4,6 +4,8 @@ import { initCamera, updateCamera } from "./camera";
 import { Boat } from "./components/boat";
 import { Tree } from "./components/tree";
 import { Bridge } from "./components/bridge";
+import { Terrain } from "./components/terrain";
+import { Object3D, Transformation } from "../scripts/object";
 
 const vertexShaderPath = '../dist/shaders/vertex.glsl';
 const fragmentShaderPath = '../dist/shaders/fragment.glsl';
@@ -24,21 +26,24 @@ gl.setNormalColoring(params.normalColoring)
 params.gl = gl;
 initCamera();
 
-let boat =  Boat.build();
-let tree =  Tree.build();
-let bridge = Bridge.build();
+let scene =  new Object3D(undefined, [], []);
+scene.setChildren([
+    Boat.build(),
+    Tree.build(),
+    Bridge.build(),
+    Terrain.build()
+])
 
 function tick() {
     requestAnimationFrame(tick);
-    drawScene()
+    scene.draw(gl);
     updateCamera(gl);
 }
 
-function drawScene() {
-    boat.draw(gl);
-    tree.draw(gl);
-    bridge.draw(gl);
-}
-
 tick();
-export {params, boat, tree, bridge};
+
+
+export function to_rads(angle: number) {
+    return (Math.PI*angle) / 180;
+}
+export {params};

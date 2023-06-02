@@ -14,7 +14,7 @@ export class Parameters {
 
 
     public boat: any = {
-        position: [5,0,0],
+        position: [50,4.2,0],
         raftColor: [217/255,33/255,32/255],
         spoilerColor: [1,1,1],
         boxPositions: [
@@ -54,15 +54,16 @@ export class Parameters {
         trunkColor: [139/255,69/255,19/255]
     }
 
-    public bridgeLenght: number = 350;
+    public bridgeLenght: number = 400;
     public towerOffset: number = (this.bridgeLenght / 8)
     public ropesOffset: number = (this.bridgeLenght / 5)
     public bridge: any = {
         values: {
             length: this.bridgeLenght,
-            h1: 15, // (5 - 25)
+            h1: 25, // (5 - 25)
             h2: 60, // (50, 80)
-            s1: 10
+            s1: 8,  // (10, 15)
+            position: [0,0,-200]
         },
         road: {
             color: [211/255,211/255,211/255],
@@ -78,6 +79,19 @@ export class Parameters {
             color: [217/255,33/255,32/255]
         },
         ropeColor: [217/255,33/255,32/255],
-        tensorColor: []
+        tensorColor: [255/255,255/255,255/255]
+    }
+
+    public terrain: any = {
+        water: {
+            color: [102/255, 178/255, 255/255],
+            level: -50
+        },
+        grass: {
+            color: [0/255, 204/255, 0/255]
+        },
+        sand: {
+            color: [204/255, 204/255, 0/255]
+        }
     }
 }

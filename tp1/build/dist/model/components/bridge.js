@@ -7,8 +7,27 @@ import {Object3D, Transformation} from "../../scripts/object.js";
 import {params} from "../scene.js";
 import {Revolution} from "../../scripts/sweep/revolution.js";
 let roadSweep;
+let ropeSweep;
 export class Bridge {
+  static buildTensor(length, radius = 0.1) {
+    let points = [
+      vec3.fromValues(0, 0, 0),
+      vec3.fromValues(radius, 0, 0),
+      vec3.fromValues(radius, 0, 0),
+      vec3.fromValues(radius, 0, 0),
+      vec3.fromValues(radius, length, 0),
+      vec3.fromValues(radius, length, 0),
+      vec3.fromValues(radius, length, 0),
+      vec3.fromValues(0, length, 0),
+      vec3.fromValues(0, length, 0),
+      vec3.fromValues(0, length, 0)
+    ];
+    let shape = new Bezier(points, CurveLevel.CUBIC);
+    return new Revolution(shape);
+  }
   static getTensors() {
+    let tensors = [];
+    return tensors;
   }
   static getRopes(radius = 0.35) {
     let {h1, h2} = params.bridge.values;
@@ -17,11 +36,11 @@ export class Bridge {
     let ropeBaseEnd = bridgeLenght / 2 + params.ropesOffset;
     let firstTowerX = bridgeLenght / 2 - params.towerOffset;
     let secondTowerX = bridgeLenght / 2 + params.towerOffset;
-    let roadHeight = getRoadPosition(bridgeLenght / 2, roadSweep.getPath()).p[2];
+    let roadHeight = getPathPosition(bridgeLenght / 2, roadSweep.getPath()).p[2];
     let ropeBaseOffset = h1 * 0.15;
-    let ropeBaseHeight = getRoadPosition(ropeBase, roadSweep.getPath()).p[2] - ropeBaseOffset;
+    let ropeBaseHeight = getPathPosition(ropeBase, roadSweep.getPath()).p[2] - ropeBaseOffset;
     let towerYOffset = h1 * 0.7;
-    let towerY = -1 * (h2 - 10 - getRoadPosition(firstTowerX, roadSweep.getPath()).p[2]) + towerYOffset;
+    let towerY = -1 * (h2 - 10 - getPathPosition(firstTowerX, roadSweep.getPath()).p[2]) + towerYOffset;
     let pathPoints = [
       vec3.fromValues(-1.5, ropeBase, ropeBaseHeight),
       vec3.fromValues(-1.5, firstTowerX, towerY + 10),
@@ -67,6 +86,7 @@ export class Bridge {
     ], CurveLevel.CUADRATIC);
     let leftSweepable = new Path(shape, path);
     let leftGeometry = new SweepSurface(leftSweepable);
+    saveRopeSweep(leftSweepable);
     let rightSweepable = new Path(shape, rightRopePath);
     let rightGeometry = new SweepSurface(rightSweepable);
     let ropes = [
@@ -77,6 +97,7 @@ export class Bridge {
         Transformation.translate([-28, 0, 0])
       ], params.bridge.ropeColor)
     ];
+    ropes[0].setChildren([...this.getTensors()]);
     return ropes;
   }
   static getRoad(length = 500) {
@@ -190,7 +211,7 @@ export class Bridge {
   }
   static build() {
     let bridge = new Object3D(void 0, [
-      Transformation.translate([-10, 0, -20])
+      Transformation.translate(params.bridge.values.position)
     ], []);
     bridge.setChildren([
       this.getRoad(params.bridgeLenght),
@@ -205,7 +226,10 @@ function to_rads(angle) {
 function saveRoadSweep(sweep) {
   roadSweep = sweep;
 }
-function getRoadPosition(position, path) {
+function saveRopeSweep(sweep) {
+  ropeSweep = sweep;
+}
+function getPathPosition(position, path) {
   let normalized = position / path.length;
   return path.getPointData(normalized);
 }
